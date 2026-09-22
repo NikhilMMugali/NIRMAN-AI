@@ -1,0 +1,352 @@
+{
+  "created_at": "2026-09-10T18:48:05.571282+00:00",
+  "seed": 42,
+  "status": "CANDIDATE",
+  "feature_version": "paimana-temporal-v1",
+  "profile": {
+    "source_rows": 8180,
+    "source_projects": 1723,
+    "source_periods": [
+      "2025-02",
+      "2025-03",
+      "2025-04",
+      "2025-05",
+      "2025-06"
+    ],
+    "implementation_risk_rows": 6457,
+    "cost_overrun_rows": 6457,
+    "time_overrun_status": "NOT_SUPPORTED",
+    "early_warning": {
+      "1_month": "EVALUABLE",
+      "3_month": "NOT_EVALUABLE",
+      "6_month": "NOT_EVALUABLE"
+    },
+    "feature_version": "paimana-temporal-v1",
+    "features": [
+      "physical_progress",
+      "expenditure",
+      "original_cost",
+      "revised_cost",
+      "progress_delta_1m",
+      "expenditure_delta_1m",
+      "progress_mean_3m",
+      "progress_std_3m",
+      "stagnant_months_3m",
+      "observations_to_date",
+      "months_elapsed",
+      "reporting_gap_months"
+    ]
+  },
+  "implementation_risk": {
+    "target": "implementation_risk_target",
+    "train_period": [
+      "2025-02",
+      "2025-03"
+    ],
+    "validation_period": "2025-04",
+    "test_period": [
+      "2025-05",
+      "2025-05"
+    ],
+    "rows": {
+      "train": 3275,
+      "validation": 1607,
+      "test": 1575
+    },
+    "class_distribution": {
+      "train": {
+        "negative": 1646,
+        "positive": 1629,
+        "total": 3275,
+        "positive_rate": 0.49740458015267175
+      },
+      "validation": {
+        "negative": 793,
+        "positive": 814,
+        "total": 1607,
+        "positive_rate": 0.5065339141257
+      },
+      "test": {
+        "negative": 765,
+        "positive": 810,
+        "total": 1575,
+        "positive_rate": 0.5142857142857142
+      }
+    },
+    "models": {
+      "dummy_classifier": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "confusion_matrix": [
+          [
+            765,
+            0
+          ],
+          [
+            810,
+            0
+          ]
+        ],
+        "roc_auc": 0.5,
+        "pr_auc": 0.5142857142857142
+      },
+      "logistic_regression": {
+        "precision": 0.5276073619631901,
+        "recall": 0.9555555555555556,
+        "f1": 0.6798418972332015,
+        "confusion_matrix": [
+          [
+            72,
+            693
+          ],
+          [
+            36,
+            774
+          ]
+        ],
+        "roc_auc": 0.7249544097474381,
+        "pr_auc": 0.7101461243965324
+      },
+      "random_forest": {
+        "precision": 0.7905882352941176,
+        "recall": 0.8296296296296296,
+        "f1": 0.8096385542168675,
+        "confusion_matrix": [
+          [
+            587,
+            178
+          ],
+          [
+            138,
+            672
+          ]
+        ],
+        "roc_auc": 0.859351246671508,
+        "pr_auc": 0.8688922687082457
+      }
+    },
+    "selection_rule": "maximize validation PR-AUC, then recall; test metrics are held out"
+  },
+  "cost_overrun": {
+    "target": "cost_overrun_target",
+    "train_period": [
+      "2025-02",
+      "2025-03"
+    ],
+    "validation_period": "2025-04",
+    "test_period": [
+      "2025-05",
+      "2025-05"
+    ],
+    "rows": {
+      "train": 3275,
+      "validation": 1607,
+      "test": 1575
+    },
+    "class_distribution": {
+      "train": {
+        "negative": 2534,
+        "positive": 741,
+        "total": 3275,
+        "positive_rate": 0.22625954198473283
+      },
+      "validation": {
+        "negative": 1277,
+        "positive": 330,
+        "total": 1607,
+        "positive_rate": 0.20535158680771623
+      },
+      "test": {
+        "negative": 1258,
+        "positive": 317,
+        "total": 1575,
+        "positive_rate": 0.20126984126984127
+      }
+    },
+    "models": {
+      "dummy_classifier": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "confusion_matrix": [
+          [
+            1258,
+            0
+          ],
+          [
+            317,
+            0
+          ]
+        ],
+        "roc_auc": 0.5,
+        "pr_auc": 0.20126984126984127
+      },
+      "logistic_regression": {
+        "precision": 1.0,
+        "recall": 0.11041009463722397,
+        "f1": 0.19886363636363635,
+        "confusion_matrix": [
+          [
+            1258,
+            0
+          ],
+          [
+            282,
+            35
+          ]
+        ],
+        "roc_auc": 0.8470357535119086,
+        "pr_auc": 0.7572682448838474
+      },
+      "random_forest": {
+        "precision": 0.8636363636363636,
+        "recall": 0.23974763406940064,
+        "f1": 0.37530864197530867,
+        "confusion_matrix": [
+          [
+            1246,
+            12
+          ],
+          [
+            241,
+            76
+          ]
+        ],
+        "roc_auc": 0.8886545666096601,
+        "pr_auc": 0.708341458150285
+      }
+    },
+    "selection_rule": "maximize validation PR-AUC, then recall; test metrics are held out"
+  },
+  "calibration": {
+    "status": "NOT_RELIABLE",
+    "reason": "The current corpus has only five usable report periods; calibration would overfit the small validation window."
+  },
+  "temporal_backtest": {
+    "implementation_risk": [
+      {
+        "train_period": [
+          "2025-02",
+          "2025-03"
+        ],
+        "validation_period": "2025-04",
+        "train_rows": 3275,
+        "validation_rows": 1607,
+        "status": "evaluated",
+        "models": {
+          "dummy_classifier": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "pr_auc": 0.5065339141257
+          },
+          "logistic_regression": {
+            "precision": 0.5358649789029536,
+            "recall": 0.9361179361179361,
+            "f1": 0.6815742397137746,
+            "pr_auc": 0.7393863469862583
+          },
+          "random_forest": {
+            "precision": 0.7734104046242775,
+            "recall": 0.8218673218673219,
+            "f1": 0.7969029184038118,
+            "pr_auc": 0.8585735098824587
+          }
+        }
+      },
+      {
+        "train_period": [
+          "2025-02",
+          "2025-04"
+        ],
+        "validation_period": "2025-05",
+        "train_rows": 4882,
+        "validation_rows": 1575,
+        "status": "evaluated",
+        "models": {
+          "dummy_classifier": {
+            "precision": 0.5142857142857142,
+            "recall": 1.0,
+            "f1": 0.6792452830188679,
+            "pr_auc": 0.5142857142857142
+          },
+          "logistic_regression": {
+            "precision": 0.7013251783893986,
+            "recall": 0.8493827160493828,
+            "f1": 0.768285873813512,
+            "pr_auc": 0.7894460737851768
+          },
+          "random_forest": {
+            "precision": 0.7959427207637232,
+            "recall": 0.8234567901234567,
+            "f1": 0.8094660194174758,
+            "pr_auc": 0.8887194751114269
+          }
+        }
+      }
+    ],
+    "cost_overrun": [
+      {
+        "train_period": [
+          "2025-02",
+          "2025-03"
+        ],
+        "validation_period": "2025-04",
+        "train_rows": 3275,
+        "validation_rows": 1607,
+        "status": "evaluated",
+        "models": {
+          "dummy_classifier": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "pr_auc": 0.20535158680771623
+          },
+          "logistic_regression": {
+            "precision": 0.975,
+            "recall": 0.11818181818181818,
+            "f1": 0.21081081081081082,
+            "pr_auc": 0.7291455582214413
+          },
+          "random_forest": {
+            "precision": 0.8823529411764706,
+            "recall": 0.22727272727272727,
+            "f1": 0.3614457831325301,
+            "pr_auc": 0.7292012516962691
+          }
+        }
+      },
+      {
+        "train_period": [
+          "2025-02",
+          "2025-04"
+        ],
+        "validation_period": "2025-05",
+        "train_rows": 4882,
+        "validation_rows": 1575,
+        "status": "evaluated",
+        "models": {
+          "dummy_classifier": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "pr_auc": 0.20126984126984127
+          },
+          "logistic_regression": {
+            "precision": 1.0,
+            "recall": 0.1829652996845426,
+            "f1": 0.30933333333333335,
+            "pr_auc": 0.722006189463806
+          },
+          "random_forest": {
+            "precision": 0.9222222222222223,
+            "recall": 0.2618296529968454,
+            "f1": 0.40786240786240785,
+            "pr_auc": 0.7408497478965561
+          }
+        }
+      }
+    ]
+  }
+}

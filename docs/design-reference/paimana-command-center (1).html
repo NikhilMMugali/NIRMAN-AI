@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script type="application/json" data-od-external-dependencies>["https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"]</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIRMAN AI — National Infrastructure Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAFA;--surface:#ffffff;--surface-alt:#F0F3F8;
+  --navy:#0B2545;--navy-light:#16345E;--navy-dark:#081A33;
+  --accent:#1E5FCC;--accent-light:#6E9BF2;
+  --text:#0B2545;--text-2:#4b5563;--text-3:#5B6472;--text-inv:#f8fafc;
+  --border:#d1d5db;--border-soft:#E4E7EC;
+  --critical:#C1352D;--critical-bg:#fef2f2;--critical-border:#fecaca;
+  --high:#C2751A;--high-bg:#fff7ed;--high-border:#fed7aa;
+  --medium:#A16207;--medium-bg:#fffbeb;--medium-border:#fde68a;
+  --low:#1E8E5A;--low-bg:#f0fdf4;--low-border:#bbf7d0;
+  --font-body:'Inter',system-ui,sans-serif;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+  --space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+html{font-size:14px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden;height:100vh;font-variant-numeric:tabular-nums}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* LAYOUT */
+.layout{display:flex;height:100vh}
+.sidebar{width:220px;background:var(--navy);color:var(--text-inv);display:flex;flex-direction:column;flex-shrink:0;z-index:10}
+.sidebar-logo{padding:var(--space-5) var(--space-5);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:var(--space-3)}
+.sidebar-logo svg{width:28px;height:28px;flex-shrink:0}
+.sidebar-logo-text{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.sidebar-logo-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.sidebar-nav{flex:1;padding:var(--space-3) 0;display:flex;flex-direction:column;gap:var(--space-1)}
+.nav-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-5);font-size:13px;font-weight:500;color:rgba(255,255,255,.65);cursor:pointer;transition:all .15s ease;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--accent-light)}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.7}
+.nav-item.active svg{opacity:1}
+.sidebar-footer{padding:var(--space-4) var(--space-5);border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.35)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border-soft);display:flex;align-items:center;padding:0 var(--space-6);gap:var(--space-4);flex-shrink:0}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap}
+.topbar-search{flex:1;max-width:360px;margin-left:var(--space-4)}
+.topbar-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius-md);padding:0 var(--space-3) 0 var(--space-8);font-size:12px;font-family:var(--font-body);color:var(--text);background:var(--surface-alt) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cline x1='11' y1='11' x2='15' y2='15'/%3E%3C/svg%3E") 10px center no-repeat;transition:border-color .15s}
+.topbar-search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(30,95,204,.12)}
+.topbar-meta{display:flex;align-items:center;gap:var(--space-4);margin-left:auto}
+.topbar-date{font-size:11px;color:var(--text-3);white-space:nowrap}
+.topbar-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-md);cursor:pointer;transition:background .15s;color:var(--text-2)}
+.topbar-icon:hover{background:var(--surface-alt)}
+.topbar-icon svg{width:18px;height:18px}
+.topbar-badge{position:relative}
+.topbar-badge::after{content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--critical);border-radius:50%;border:1.5px solid var(--surface)}
+.topbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--text-inv);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-5)}
+.page-header{display:flex;align-items:baseline;gap:var(--space-4)}
+.page-header h1{font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-.02em}
+.page-header .subtitle{font-size:12px;color:var(--text-3)}
+
+/* KPI CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4)}
+.kpi-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:var(--space-4) var(--space-4);position:relative;transition:box-shadow .15s}
+.kpi-card:hover{box-shadow:var(--shadow-md)}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:var(--space-2);display:flex;align-items:center;gap:var(--space-1)}
+.kpi-value{font-size:26px;font-weight:700;color:var(--navy);line-height:1.1;letter-spacing:-.02em}
+.kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;margin-top:var(--space-2);padding:2px 6px;border-radius:var(--radius-sm)}
+.kpi-trend.up{color:var(--low);background:var(--low-bg)}
+.kpi-trend.down{color:var(--critical);background:var(--critical-bg)}
+.kpi-trend.neutral{color:var(--text-3);background:var(--surface-alt)}
+
+/* AI HERO CARD */
+.ai-hero-card{
+  position:relative;
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  padding:var(--space-5);
+  background-clip:padding-box;
+  border:1.5px solid transparent;
+}
+.ai-hero-card::before{
+  content:"";position:absolute;inset:0;border-radius:var(--radius-lg);padding:1.5px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-light));
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+}
+
+/* MAP SECTION */
+.map-section{display:grid;grid-template-columns:1fr 360px;gap:var(--space-4)}
+.map-panel{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:var(--space-5);position:relative}
+.map-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4)}
+.map-panel-title{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:var(--space-2)}
+.map-panel-title svg{width:18px;height:18px;color:var(--accent)}
+.map-controls{display:flex;align-items:center;gap:var(--space-2)}
+.map-toggle{display:flex;background:var(--surface-alt);border:1px solid var(--border-soft);border-radius:var(--radius-sm);overflow:hidden}
+.map-toggle-btn{padding:5px 12px;font-size:11px;font-weight:600;font-family:var(--font-body);border:none;background:transparent;color:var(--text-3);cursor:pointer;transition:all .15s}
+.map-toggle-btn.active{background:var(--navy);color:#fff}
+.map-container{position:relative;width:100%;aspect-ratio:4/3;max-height:420px}
+.map-container svg{width:100%;height:100%}
+.map-container svg path{stroke:#fff;stroke-width:0.8;cursor:pointer;transition:opacity .15s,stroke-width .15s}
+.map-container svg path:hover{opacity:.85;stroke-width:1.5;stroke:var(--navy)}
+.map-legend{position:absolute;bottom:var(--space-3);left:var(--space-3);background:rgba(255,255,255,.95);border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);display:flex;align-items:center;gap:var(--space-2);font-size:10px;color:var(--text-3)}
+.map-tooltip{position:absolute;background:var(--navy);color:#fff;padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);font-size:11px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:20;white-space:nowrap;box-shadow:var(--shadow-lg)}
+.map-tooltip.visible{opacity:1}
+.map-tooltip strong{font-weight:700;display:block;margin-bottom:2px;font-size:12px}
+.map-tooltip span{color:rgba(255,255,255,.7)}
+
+/* SIDE PANELS */
+.side-panels{display:flex;flex-direction:column;gap:var(--space-4)}
+.side-panel{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:var(--space-4)}
+.side-panel-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:var(--space-3);text-transform:uppercase;letter-spacing:.04em}
+
+/* SECTOR CHART */
+.sector-chart{display:flex;flex-direction:column;gap:var(--space-3)}
+.sector-row{display:flex;align-items:center;gap:var(--space-3)}
+.sector-name{font-size:11px;font-weight:500;color:var(--text-2);width:80px;flex-shrink:0;text-align:right}
+.sector-bar-track{flex:1;height:20px;background:var(--surface-alt);border-radius:3px;overflow:hidden;position:relative}
+.sector-bar-fill{height:100%;background:var(--navy);border-radius:3px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:var(--space-2)}
+.sector-bar-fill span{font-size:9px;font-weight:600;color:#fff}
+.sector-val{font-size:11px;font-weight:500;color:var(--text-3);width:50px;text-align:right}
+
+/* PROJECTS TABLE */
+.table-panel{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-md);overflow:hidden}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border-soft)}
+.table-title{font-size:14px;font-weight:700;color:var(--navy)}
+.table-badge{font-size:11px;font-weight:600;color:var(--text-3);background:var(--surface-alt);padding:2px 8px;border-radius:var(--radius-sm)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{padding:var(--space-3) var(--space-4);text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);background:var(--surface-alt);border-bottom:1px solid var(--border-soft);white-space:nowrap;position:sticky;top:0}
+tbody td{padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--border-soft);white-space:nowrap;color:var(--text);vertical-align:middle}
+tbody tr:hover{background:var(--surface-alt)}
+tbody tr:last-child td{border-bottom:none}
+.rank{font-weight:700;color:var(--navy);width:32px;text-align:center}
+.project-name{font-weight:600;color:var(--navy);max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.project-ministry{color:var(--text-2);max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.project-state{color:var(--text-2)}
+.project-value{font-weight:600;color:var(--text)}
+.progress-cell{min-width:80px}
+.progress-mini{height:4px;background:var(--surface-alt);border-radius:2px;overflow:hidden;width:60px;display:inline-block;vertical-align:middle;margin-right:6px}
+.progress-mini-fill{height:100%;border-radius:2px}
+.progress-pct{font-size:11px;font-weight:500}
+.risk-score{font-weight:700;font-size:13px}
+.risk-score.critical{color:var(--critical)}
+.risk-score.high{color:var(--high)}
+.risk-score.medium{color:var(--medium)}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--radius-sm);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.status-badge.critical{background:var(--critical-bg);color:var(--critical)}
+.status-badge.high{background:var(--high-bg);color:var(--high)}
+.status-badge.medium{background:var(--medium-bg);color:var(--medium)}
+.status-badge.low{background:var(--low-bg);color:var(--low)}
+.status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.status-dot.critical{background:var(--critical)}
+.status-dot.high{background:var(--high)}
+.status-dot.medium{background:var(--medium)}
+.status-dot.low{background:var(--low)}
+.action-link{font-size:11px;font-weight:600;color:var(--accent);cursor:pointer}
+.action-link:hover{text-decoration:underline}
+
+.ai-hero-cta{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:var(--space-2) var(--space-4);font-size:12px;font-weight:600;font-family:var(--font-body);cursor:pointer;transition:background .15s}
+.ai-hero-cta:hover{background:var(--accent-light)}
+.ai-hero-cta:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* CHAT PANEL */
+.chat-panel{width:380px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border-soft);display:flex;flex-direction:column;height:100vh}
+.chat-header{height:52px;display:flex;align-items:center;gap:var(--space-2);padding:0 var(--space-5);border-bottom:1px solid var(--border-soft);font-size:13px;font-weight:600;color:var(--navy);flex-shrink:0}
+.chat-messages{flex:1;overflow-y:auto;padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4)}
+.chat-empty{margin:auto;text-align:center;color:var(--text-3)}
+.chat-empty h3{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:var(--space-4)}
+.chat-chip{display:inline-block;font-size:12px;padding:6px 12px;border:1px solid var(--border-soft);border-radius:999px;color:var(--text-2);cursor:pointer;margin:var(--space-1);transition:all .15s}
+.chat-chip:hover{border-color:var(--accent);color:var(--accent)}
+.chat-bubble-user{align-self:flex-end;max-width:85%;background:var(--accent);color:#fff;border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);font-size:13px;line-height:1.5}
+.chat-bubble-ai{align-self:flex-start;max-width:100%;color:var(--text);font-size:13px;line-height:1.55}
+.chat-input-row{border-top:1px solid var(--border-soft);padding:var(--space-3) var(--space-4);display:flex;gap:var(--space-2);align-items:flex-end;flex-shrink:0}
+.chat-input-row textarea{flex:1;resize:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-2) var(--space-3);font-family:var(--font-body);font-size:13px;max-height:96px}
+.chat-send{width:32px;height:32px;border-radius:50%;background:var(--accent);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s}
+.chat-send:hover{background:var(--accent-light)}
+
+/* SCROLLBAR */
+.content::-webkit-scrollbar{width:6px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.content::-webkit-scrollbar-thumb:hover{background:var(--text-3)}
+
+/* FOCUS */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="layout" data-od-id="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" data-od-id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="var(--accent)"/><path d="M8 20V8l6 6 6-6v12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="sidebar-logo-text">NIRMAN AI</div>
+        <div class="sidebar-logo-sub">Govt. of India</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav" data-od-id="sidebar-nav">
+      <div class="nav-item active" data-od-id="nav-command-center" role="button" tabindex="0" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Command Center
+      </div>
+      <div class="nav-item" data-od-id="nav-risk-radar" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Risk Radar
+      </div>
+      <div class="nav-item" data-od-id="nav-projects" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        Projects
+      </div>
+      <div class="nav-item" data-od-id="nav-state-intel" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        State Intelligence
+      </div>
+      <div class="nav-item" data-od-id="nav-sector-intel" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Sector Intelligence
+      </div>
+      <div class="nav-item" data-od-id="nav-ai-insights" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 014 4c0 1.95-2 3-2 8h-4c0-5-2-6.05-2-8a4 4 0 014-4z"/><line x1="10" y1="18" x2="14" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/></svg>
+        AI Insights
+      </div>
+    </nav>
+    <div class="sidebar-footer">NIRMAN AI v2.4.1 &middot; Classified</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <header class="topbar" data-od-id="topbar">
+      <div class="topbar-title">National Infrastructure Command Center</div>
+      <div class="topbar-search">
+        <input type="text" placeholder="Search projects, states, ministries..." aria-label="Global search" data-od-id="global-search">
+      </div>
+      <div class="topbar-meta">
+        <span class="topbar-date">Data as of: 01 Sep 2026, 09:30 IST</span>
+        <div class="topbar-icon topbar-badge" data-od-id="notification-bell" role="button" aria-label="Notifications" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
+        <div class="topbar-avatar" data-od-id="user-avatar">AK</div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <!-- PAGE HEADER -->
+      <div class="page-header" data-od-id="page-header">
+        <h1>National Infrastructure Command Center</h1>
+        <span class="subtitle">Real-time intelligence across 1,247 active projects &middot; 36 States/UTs &middot; 18 Sectors</span>
+      </div>
+
+      <!-- KPI ROW -->
+      <div class="kpi-row" data-od-id="kpi-row">
+        <div class="kpi-card" data-od-id="kpi-total-projects">
+          <div class="kpi-label">Total Projects</div>
+          <div class="kpi-value">1,247</div>
+          <div class="kpi-trend up">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,7 5,3 8,7"/></svg>
+            +23 this quarter
+          </div>
+        </div>
+        <div class="kpi-card" data-od-id="kpi-cost-overrun">
+          <div class="kpi-label">Cost Overrun</div>
+          <div class="kpi-value" style="color:var(--critical)">+20.1%</div>
+          <div class="kpi-trend neutral">&#8377;18.4L Cr &rarr; &#8377;22.1L Cr</div>
+        </div>
+        <div class="kpi-card" data-od-id="kpi-expenditure">
+          <div class="kpi-label">Total Expenditure</div>
+          <div class="kpi-value">&#8377;14.7L Cr</div>
+          <div class="kpi-trend neutral">66.5% utilized</div>
+        </div>
+        <div class="kpi-card" data-od-id="kpi-at-risk">
+          <div class="kpi-label">At-Risk Projects</div>
+          <div class="kpi-value" style="color:var(--critical)">312</div>
+          <div class="kpi-trend neutral">189 delayed &middot; avg 14.2 months</div>
+        </div>
+      </div>
+
+      <!-- AI HERO INSIGHT CARD -->
+      <div class="ai-hero-card" data-od-id="ai-hero-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-4)">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:var(--space-2)">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8"/><line x1="8" y1="8" x2="10.5" y2="10"/></svg>
+              AI-Generated Insights
+            </div>
+          </div>
+          <span style="font-size:11px;color:var(--text-3)">Updated 2 hours ago &middot; 3 signals detected</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--critical);margin-top:5px;flex-shrink:0"></div>
+            <div style="font-size:13px;color:var(--text)"><strong style="color:var(--critical)">Critical Alert:</strong> 12 highway projects in Uttar Pradesh show compounding delays exceeding 18 months. Estimated fiscal impact: &#8377;4,200 Cr.</div>
+          </div>
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--high);margin-top:5px;flex-shrink:0"></div>
+            <div style="font-size:13px;color:var(--text)"><strong style="color:var(--high)">Trend Detected:</strong> Railway sector cost overruns accelerating — 8% increase in revised estimates over last 90 days across 23 projects.</div>
+          </div>
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--low);margin-top:5px;flex-shrink:0"></div>
+            <div style="font-size:13px;color:var(--text)"><strong style="color:var(--low)">Positive:</strong> Renewable energy projects in Rajasthan and Gujarat tracking 12% ahead of schedule. Model suggests on-time completion probability: 94%.</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:var(--space-4)">
+          <button class="ai-hero-cta" onclick="sendChat('Why are 12 highway projects in Uttar Pradesh flagged as critical?')" data-od-id="ai-hero-cta">Ask AI about this</button>
+        </div>
+      </div>
+
+      <!-- MAP + SIDE PANELS -->
+      <div class="map-section">
+        <!-- India Choropleth Map -->
+        <div class="map-panel" data-od-id="critical-map">
+          <div class="map-panel-header">
+            <div class="map-panel-title">
+              <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 1C5.13 1 2 4.13 2 8c0 5.25 7 9 7 9s7-3.75 7-9c0-3.87-3.13-7-7-7z"/><circle cx="9" cy="8" r="2.5"/></svg>
+              Critical Project Concentration Map
+            </div>
+            <div class="map-controls">
+              <div class="map-toggle" data-od-id="map-toggle">
+                <button class="map-toggle-btn active" data-mode="critical" onclick="switchMapMode('critical')">Critical Count</button>
+                <button class="map-toggle-btn" data-mode="risk" onclick="switchMapMode('risk')">Risk Concentration</button>
+              </div>
+            </div>
+          </div>
+          <div class="map-container" data-od-id="india-map">
+            <svg viewBox="0 0 800 700" xmlns="http://www.w3.org/2000/svg" id="indiaMap">
+              <!-- Background -->
+              <rect width="800" height="700" fill="#f8f9fc" rx="4"/>
+              <!-- India Map - Simplified State Paths -->
+              <!-- Jammu & Kashmir -->
+              <path d="M280,40 L320,35 L350,50 L360,80 L355,110 L340,125 L310,130 L290,120 L270,100 L265,70 Z" data-state="jammu-kashmir" data-critical="8" data-total="12" data-value="18400" fill="#E58D86" class="state-path"/>
+              <!-- Ladakh -->
+              <path d="M320,35 L370,20 L410,25 L430,50 L420,80 L390,95 L360,80 L350,50 Z" data-state="ladakh" data-critical="3" data-total="5" data-value="9200" fill="#F0D9D6" class="state-path"/>
+              <!-- Himachal Pradesh -->
+              <path d="M310,130 L340,125 L355,110 L370,120 L365,145 L345,160 L320,155 L305,145 Z" data-state="himachal-pradesh" data-critical="2" data-total="8" data-value="5600" fill="#F0D9D6" class="state-path"/>
+              <!-- Punjab -->
+              <path d="M270,100 L290,120 L310,130 L305,145 L285,155 L265,148 L250,130 L255,110 Z" data-state="punjab" data-critical="4" data-total="15" data-value="12300" fill="#C2751A" class="state-path"/>
+              <!-- Uttarakhand -->
+              <path d="M345,160 L365,145 L390,150 L405,170 L395,195 L370,200 L350,190 L340,175 Z" data-state="uttarakhand" data-critical="3" data-total="9" data-value="7800" fill="#F0D9D6" class="state-path"/>
+              <!-- Haryana -->
+              <path d="M265,148 L285,155 L305,145 L320,155 L315,175 L295,185 L270,180 L255,165 Z" data-state="haryana" data-critical="5" data-total="18" data-value="15600" fill="#C2751A" class="state-path"/>
+              <!-- Delhi -->
+              <path d="M290,175 L305,170 L310,180 L300,190 L288,185 Z" data-state="delhi" data-critical="2" data-total="7" data-value="8900" fill="#F0D9D6" class="state-path"/>
+              <!-- Uttar Pradesh -->
+              <path d="M320,155 L345,160 L370,200 L405,210 L440,200 L470,215 L480,250 L460,270 L430,280 L400,270 L370,260 L340,240 L320,220 L315,195 L315,175 Z" data-state="uttar-pradesh" data-critical="12" data-total="42" data-value="38500" fill="#C1352D" class="state-path"/>
+              <!-- Rajasthan -->
+              <path d="M200,180 L255,165 L270,180 L295,185 L315,195 L320,220 L310,260 L280,290 L240,300 L200,290 L175,260 L170,220 Z" data-state="rajasthan" data-critical="7" data-total="28" data-value="28400" fill="#E58D86" class="state-path"/>
+              <!-- Gujarat -->
+              <path d="M170,260 L175,260 L200,290 L240,300 L250,330 L240,360 L220,380 L190,375 L165,350 L155,310 L155,280 Z" data-state="gujarat" data-critical="6" data-total="24" data-value="22100" fill="#C2751A" class="state-path"/>
+              <!-- Madhya Pradesh -->
+              <path d="M280,290 L310,260 L340,240 L370,260 L400,270 L430,280 L445,310 L440,350 L420,380 L385,395 L345,390 L310,375 L280,350 L265,320 Z" data-state="madhya-pradesh" data-critical="9" data-total="35" data-value="32700" fill="#E58D86" class="state-path"/>
+              <!-- Chhattisgarh -->
+              <path d="M430,280 L460,270 L480,250 L500,265 L510,300 L505,340 L485,370 L460,380 L440,350 L445,310 Z" data-state="chhattisgarh" data-critical="5" data-total="18" data-value="14200" fill="#C2751A" class="state-path"/>
+              <!-- Jharkhand -->
+              <path d="M480,250 L510,240 L535,255 L540,285 L525,310 L505,315 L500,295 L500,265 Z" data-state="jharkhand" data-critical="4" data-total="14" data-value="11800" fill="#C2751A" class="state-path"/>
+              <!-- Bihar -->
+              <path d="M440,200 L470,215 L480,250 L510,240 L530,225 L540,200 L520,180 L490,175 L460,180 Z" data-state="bihar" data-critical="6" data-total="22" data-value="16500" fill="#C2751A" class="state-path"/>
+              <!-- West Bengal -->
+              <path d="M520,180 L540,200 L555,220 L560,255 L550,290 L535,310 L525,310 L520,285 L510,265 L510,240 L530,225 Z" data-state="west-bengal" data-critical="5" data-total="20" data-value="17800" fill="#C2751A" class="state-path"/>
+              <!-- Sikkim -->
+              <path d="M540,200 L555,195 L565,210 L555,220 Z" data-state="sikkim" data-critical="1" data-total="3" data-value="2100" fill="#FAE7C8" class="state-path"/>
+              <!-- Arunachal Pradesh -->
+              <path d="M565,175 L600,165 L640,175 L650,200 L630,215 L595,210 L565,200 L560,185 Z" data-state="arunachal-pradesh" data-critical="2" data-total="6" data-value="4800" fill="#F0D9D6" class="state-path"/>
+              <!-- Assam -->
+              <path d="M565,200 L595,210 L630,215 L625,240 L600,250 L575,245 L555,230 L555,215 Z" data-state="assam" data-critical="3" data-total="11" data-value="8200" fill="#F0D9D6" class="state-path"/>
+              <!-- Nagaland -->
+              <path d="M630,215 L650,210 L660,230 L645,245 L630,240 Z" data-state="nagaland" data-critical="1" data-total="4" data-value="2800" fill="#FAE7C8" class="state-path"/>
+              <!-- Manipur -->
+              <path d="M645,245 L660,240 L665,265 L650,275 L640,265 Z" data-state="manipur" data-critical="1" data-total="3" data-value="2200" fill="#FAE7C8" class="state-path"/>
+              <!-- Mizoram -->
+              <path d="M640,265 L650,275 L655,300 L640,310 L635,290 Z" data-state="mizoram" data-critical="0" data-total="2" data-value="1500" fill="#d4edda" class="state-path"/>
+              <!-- Tripura -->
+              <path d="M625,290 L640,285 L645,305 L630,315 L620,305 Z" data-state="tripura" data-critical="0" data-total="3" data-value="1800" fill="#d4edda" class="state-path"/>
+              <!-- Meghalaya -->
+              <path d="M575,245 L600,250 L625,245 L630,260 L610,270 L585,265 L570,255 Z" data-state="meghalaya" data-critical="1" data-total="5" data-value="3400" fill="#FAE7C8" class="state-path"/>
+              <!-- Odisha -->
+              <path d="M460,380 L485,370 L510,375 L530,395 L525,425 L505,445 L475,440 L455,420 L450,395 Z" data-state="odisha" data-critical="4" data-total="16" data-value="13600" fill="#C2751A" class="state-path"/>
+              <!-- Andhra Pradesh -->
+              <path d="M385,395 L420,380 L440,350 L460,380 L450,395 L455,420 L475,440 L470,470 L445,490 L415,485 L390,465 L375,435 L370,410 Z" data-state="andhra-pradesh" data-critical="5" data-total="22" data-value="19800" fill="#C2751A" class="state-path"/>
+              <!-- Telangana -->
+              <path d="M345,390 L385,395 L370,410 L375,435 L390,465 L370,475 L345,465 L330,440 L325,415 Z" data-state="telangana" data-critical="4" data-total="18" data-value="15200" fill="#C2751A" class="state-path"/>
+              <!-- Karnataka -->
+              <path d="M310,375 L345,390 L325,415 L330,440 L345,465 L370,475 L365,505 L340,525 L310,520 L290,495 L285,460 L295,430 L300,400 Z" data-state="karnataka" data-critical="4" data-total="20" data-value="17400" fill="#C2751A" class="state-path"/>
+              <!-- Goa -->
+              <path d="M285,460 L295,455 L300,470 L290,478 Z" data-state="goa" data-critical="1" data-total="4" data-value="2600" fill="#FAE7C8" class="state-path"/>
+              <!-- Maharashtra -->
+              <path d="M240,300 L280,350 L310,375 L300,400 L295,430 L285,460 L265,470 L235,460 L210,435 L195,400 L195,370 L210,340 L225,320 Z" data-state="maharashtra" data-critical="8" data-total="32" data-value="29600" fill="#E58D86" class="state-path"/>
+              <!-- Kerala -->
+              <path d="M310,520 L340,525 L345,555 L335,585 L315,595 L300,580 L295,550 L300,530 Z" data-state="kerala" data-critical="2" data-total="10" data-value="8400" fill="#F0D9D6" class="state-path"/>
+              <!-- Tamil Nadu -->
+              <path d="M340,525 L365,505 L390,520 L415,530 L425,555 L415,580 L390,595 L360,590 L340,575 L335,555 L335,540 Z" data-state="tamil-nadu" data-critical="3" data-total="15" data-value="13200" fill="#F0D9D6" class="state-path"/>
+              <!-- Puducherry -->
+              <path d="M400,540 L410,538 L412,548 L402,550 Z" data-state="puducherry" data-critical="0" data-total="1" data-value="800" fill="#d4edda" class="state-path"/>
+              <!-- Andaman & Nicobar -->
+              <path d="M620,420 L628,415 L632,440 L625,460 L618,445 Z" data-state="andaman" data-critical="0" data-total="2" data-value="1200" fill="#d4edda" class="state-path"/>
+              <!-- Lakshadweep -->
+              <path d="M210,480 L218,478 L220,490 L212,492 Z" data-state="lakshadweep" data-critical="0" data-total="1" data-value="400" fill="#d4edda" class="state-path"/>
+              <!-- Chandigarh -->
+              <path d="M288,158 L296,155 L298,165 L290,167 Z" data-state="chandigarh" data-critical="1" data-total="3" data-value="2400" fill="#FAE7C8" class="state-path"/>
+              <!-- Dadra & Nagar Haveli -->
+              <path d="M218,365 L228,362 L230,375 L220,377 Z" data-state="dadra" data-critical="0" data-total="2" data-value="1100" fill="#d4edda" class="state-path"/>
+              <!-- Daman & Diu -->
+              <path d="M195,340 L205,337 L207,348 L197,350 Z" data-state="daman" data-critical="0" data-total="1" data-value="600" fill="#d4edda" class="state-path"/>
+            </svg>
+            <!-- Map Legend -->
+            <div class="map-legend" data-od-id="map-legend">
+              <span style="font-size:10px;font-weight:600;color:var(--text-3)">Critical density:</span>
+              <div style="display:flex;align-items:center;gap:var(--space-2)">
+                <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:12px;border-radius:2px;background:var(--low-bg);border:1px solid var(--border-soft)"></div><span style="font-size:10px;color:var(--text-3)">Low</span></div>
+                <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:12px;border-radius:2px;background:#FAE7C8"></div><span style="font-size:10px;color:var(--text-3)">Medium</span></div>
+                <div style="display:flex;align-items:center;gap:3px"><div style="width:12px;height:12px;border-radius:2px;background:var(--critical)"></div><span style="font-size:10px;color:var(--text-3)">Critical</span></div>
+              </div>
+            </div>
+            <!-- Tooltip -->
+            <div class="map-tooltip" id="mapTooltip">
+              <strong id="tooltipState">Uttar Pradesh</strong>
+              <span>Critical Projects: <b id="tooltipCritical">12</b></span><br>
+              <span>Total Projects: <b id="tooltipTotal">42</b></span><br>
+              <span>Total Value: <b id="tooltipValue">&#8377;38,500 Cr</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side Panels -->
+        <div class="side-panels">
+          <!-- Sector Portfolio -->
+          <div class="side-panel" data-od-id="sector-portfolio">
+            <div class="side-panel-title">Sector Portfolio by Value</div>
+            <div class="sector-chart">
+              <div class="sector-row">
+                <span class="sector-name">Highways</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:85%"><span>&#8377;5.2L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Railways</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:72%"><span>&#8377;4.4L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Power</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:55%"><span>&#8377;3.3L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Irrigation</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:40%"><span>&#8377;2.4L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Urban Infra</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:32%"><span>&#8377;1.9L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Telecom</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:22%"><span>&#8377;1.3L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Renewables</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:18%"><span>&#8377;1.1L</span></div></div>
+              </div>
+              <div class="sector-row">
+                <span class="sector-name">Water</span>
+                <div class="sector-bar-track"><div class="sector-bar-fill" style="width:14%"><span>&#8377;8.5K</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top States by Risk -->
+          <div class="side-panel" data-od-id="top-states-risk">
+            <div class="side-panel-title">States by Critical Projects</div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border-soft)">
+                <div style="display:flex;align-items:center;gap:var(--space-2)">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-3);width:16px">01</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text)">Uttar Pradesh</span>
+                </div>
+                <span class="status-badge critical"><span class="status-dot critical"></span>12</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border-soft)">
+                <div style="display:flex;align-items:center;gap:var(--space-2)">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-3);width:16px">02</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text)">Maharashtra</span>
+                </div>
+                <span class="status-badge critical"><span class="status-dot critical"></span>8</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border-soft)">
+                <div style="display:flex;align-items:center;gap:var(--space-2)">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-3);width:16px">03</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text)">Madhya Pradesh</span>
+                </div>
+                <span class="status-badge critical"><span class="status-dot critical"></span>9</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border-soft)">
+                <div style="display:flex;align-items:center;gap:var(--space-2)">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-3);width:16px">04</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text)">Rajasthan</span>
+                </div>
+                <span class="status-badge high"><span class="status-dot high"></span>7</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0">
+                <div style="display:flex;align-items:center;gap:var(--space-2)">
+                  <span style="font-size:10px;font-weight:700;color:var(--text-3);width:16px">05</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--text)">Bihar</span>
+                </div>
+                <span class="status-badge high"><span class="status-dot high"></span>6</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOP PROJECTS TABLE -->
+      <div class="table-panel" data-od-id="top-projects-table">
+        <div class="table-header">
+          <div class="table-title">Top Projects Requiring Attention</div>
+          <div class="table-badge">AI-Ranked</div>
+        </div>
+        <div class="table-wrap" style="max-height:320px;overflow-y:auto">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px">Rank</th>
+                <th>Project</th>
+                <th>Ministry</th>
+                <th>State</th>
+                <th>Sector</th>
+                <th style="text-align:right">Value (Cr)</th>
+                <th>Progress</th>
+                <th style="text-align:center">Risk</th>
+                <th>Status</th>
+                <th>Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="rank">1</td>
+                <td class="project-name">Delhi-Mumbai Expressway (Phase IV)</td>
+                <td class="project-ministry">MoRTH</td>
+                <td class="project-state">Maharashtra</td>
+                <td>Highways</td>
+                <td class="project-value" style="text-align:right">45,200</td>
+                <td class="progress-cell">
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:34%;background:var(--critical)"></div></div>
+                  <span class="progress-pct" style="color:var(--critical)">34%</span>
+                </td>
+                <td class="risk-score critical">92</td>
+                <td><span class="status-badge critical"><span class="status-dot critical"></span>Critical</span></td>
+                <td class="action-link">Escalate to Cabinet</td>
+              </tr>
+              <tr>
+                <td class="rank">2</td>
+                <td class="project-name">Mumbai-Ahmedabad High-Speed Rail</td>
+                <td class="project-ministry">MoSR</td>
+                <td class="project-state">Gujarat</td>
+                <td>Railways</td>
+                <td class="project-value" style="text-align:right">1,08,000</td>
+                <td class="progress-cell">
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:28%;background:var(--critical)"></div></div>
+                  <span class="progress-pct" style="color:var(--critical)">28%</span>
+                </td>
+                <td class="risk-score critical">89</td>
+                <td><span class="status-badge critical"><span class="status-dot critical"></span>Critical</span></td>
+                <td class="action-link">Review timeline</td>
+              </tr>
+              <tr>
+                <td class="rank">3</td>
+                <td class="project-name">Bundelkhand Expressway Extension</td>
+                <td class="project-ministry">MoRTH</td>
+                <td class="project-state">Uttar Pradesh</td>
+                <td>Highways</td>
+                <td class="project-value" style="text-align:right">18,750</td>
+                <td class="progress-cell">
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:45%;background:var(--high)"></div></div>
+                  <span class="progress-pct" style="color:var(--high)">45%</span>
+                </td>
+                <td class="risk-score high">78</td>
+                <td><span class="status-badge high"><span class="status-dot high"></span>High</span></td>
+                <td class="action-link">Deploy site monitor</td>
+              </tr>
+              <tr>
+                <td class="rank">4</td>
+                <td class="project-name">Udhampur-Srinagar-Baramulla Rail Link</td>
+                <td class="project-ministry">MoSR</td>
+                <td class="project-state">Jammu &amp; Kashmir</td>
+                <td>Railways</td>
+                <td class="project-value" style="text-align:right">28,100</td>
+                <td class="progress-cell">
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:62%;background:var(--medium)"></div></div>
+                  <span class="progress-pct" style="color:var(--medium)">62%</span>
+                </td>
+                <td class="risk-score high">74</td>
+                <td><span class="status-badge high"><span class="status-dot high"></span>High</span></td>
+                <td class="action-link">Acquire pending land</td>
+              </tr>
+              <tr>
+                <td class="rank">5</td>
+                <td class="project-name">Chambal Pradesh Irrigation Project</td>
+                <td class="project-ministry">MoWR</td>
+                <td class="project-state">Madhya Pradesh</td>
+                <td>Irrigation</td>
+                <td class="project-value" style="text-align:right">12,400</td>
+                <td class="progress-cell">
+                  <div class="progress-mini"><div class="progress-mini-fill" style="width:55%;background:var(--medium)"></div></div>
+                  <span class="progress-pct" style="color:var(--medium)">55%</span>
+                </td>
+                <td class="risk-score medium">65</td>
+                <td><span class="status-badge medium"><span class="status-dot medium"></span>Medium</span></td>
+                <td class="action-link">Review contractor SLA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="padding:var(--space-3) var(--space-5);border-top:1px solid var(--border-soft)">
+          <span class="action-link">View all 1,247 projects</span>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <aside class="chat-panel" data-od-id="chat-panel">
+    <div class="chat-header">AI Assistant</div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-empty" id="chatEmpty">
+        <h3>Ask about any project, ministry or trend</h3>
+        <span class="chat-chip" onclick="askChip(this)" role="button" tabindex="0" data-od-id="chat-chip-1" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();askChip(this)}">Why is UP highway cluster flagged critical?</span>
+        <span class="chat-chip" onclick="askChip(this)" role="button" tabindex="0" data-od-id="chat-chip-2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();askChip(this)}">Which ministry has the highest overrun?</span>
+        <span class="chat-chip" onclick="askChip(this)" role="button" tabindex="0" data-od-id="chat-chip-3" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();askChip(this)}">Summarise this month's alerts</span>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <textarea id="chatInput" rows="1" placeholder="Ask about a project, ministry, or trend…" aria-label="Chat input" data-od-id="chat-input"></textarea>
+      <button class="chat-send" id="chatSend" aria-label="Send">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 8h11M8 3l5 5-5 5"/></svg>
+      </button>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// Map mode toggle
+function switchMapMode(mode) {
+  const btns = document.querySelectorAll('.map-toggle-btn');
+  btns.forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  // In a real app, this would re-render the map with different data
+}
+
+// Tooltip functionality
+const tooltip = document.getElementById('mapTooltip');
+const tooltipState = document.getElementById('tooltipState');
+const tooltipCritical = document.getElementById('tooltipCritical');
+const tooltipTotal = document.getElementById('tooltipTotal');
+const tooltipValue = document.getElementById('tooltipValue');
+const mapContainer = document.querySelector('.map-container');
+
+document.querySelectorAll('.state-path').forEach(path => {
+  path.addEventListener('mouseenter', function(e) {
+    const state = this.dataset.state;
+    const critical = this.dataset.critical;
+    const total = this.dataset.total;
+    const value = this.dataset.value;
+    tooltipState.textContent = state.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    tooltipCritical.textContent = critical;
+    tooltipTotal.textContent = total;
+    tooltipValue.textContent = '\u20B9' + Number(value).toLocaleString('en-IN') + ' Cr';
+    tooltip.classList.add('visible');
+  });
+  path.addEventListener('mousemove', function(e) {
+    const rect = mapContainer.getBoundingClientRect();
+    let x = e.clientX - rect.left + 15;
+    let y = e.clientY - rect.top - 10;
+    if (x + 180 > rect.width) x = x - 200;
+    if (y + 80 > rect.height) y = y - 80;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+  });
+  path.addEventListener('mouseleave', function() {
+    tooltip.classList.remove('visible');
+  });
+  path.addEventListener('click', function() {
+    // Drill into state intelligence
+    const state = this.dataset.state;
+    console.log('Navigate to State Intelligence:', state);
+  });
+});
+
+// Persist sidebar nav state
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  item.addEventListener('click', function() {
+    navItems.forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Chat panel
+function appendMessage(text, from){
+  const box = document.getElementById('chatMessages');
+  document.getElementById('chatEmpty')?.remove();
+  const el = document.createElement('div');
+  el.className = from === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai';
+  el.textContent = text;
+  box.appendChild(el);
+  box.scrollTop = box.scrollHeight;
+}
+function askChip(chip){ sendChat(chip.textContent); }
+function sendChat(text){
+  if(!text) return;
+  appendMessage(text, 'user');
+  document.getElementById('chatInput').value = '';
+  setTimeout(() => appendMessage('Sample response — wire this to the model API.', 'ai'), 400);
+}
+document.getElementById('chatSend').addEventListener('click', () => sendChat(document.getElementById('chatInput').value.trim()));
+document.getElementById('chatInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendChat(e.target.value.trim()); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+
+# Node / Frontend Dependencies & Build Output
+node_modules/
+.next/
+dist/
+build/
+
+# Python Virtual Environments
+.venv/
+.venv312/
+venv/
+ENV/
+env/
+
+# Python Caches & Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating System & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Antigravity Scratch Caches (if any)
+.temp/
+
+# Large Raw Archives (>100MB)
+data/raw/archive/
+*.rar
+

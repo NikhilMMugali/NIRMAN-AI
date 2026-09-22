@@ -1,0 +1,126 @@
+{
+  "implementation_risk": [
+    {
+      "train_period": [
+        "2025-02",
+        "2025-03"
+      ],
+      "validation_period": "2025-04",
+      "train_rows": 3275,
+      "validation_rows": 1607,
+      "status": "evaluated",
+      "models": {
+        "dummy_classifier": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pr_auc": 0.5065339141257
+        },
+        "logistic_regression": {
+          "precision": 0.5358649789029536,
+          "recall": 0.9361179361179361,
+          "f1": 0.6815742397137746,
+          "pr_auc": 0.7393863469862583
+        },
+        "random_forest": {
+          "precision": 0.7734104046242775,
+          "recall": 0.8218673218673219,
+          "f1": 0.7969029184038118,
+          "pr_auc": 0.8585735098824587
+        }
+      }
+    },
+    {
+      "train_period": [
+        "2025-02",
+        "2025-04"
+      ],
+      "validation_period": "2025-05",
+      "train_rows": 4882,
+      "validation_rows": 1575,
+      "status": "evaluated",
+      "models": {
+        "dummy_classifier": {
+          "precision": 0.5142857142857142,
+          "recall": 1.0,
+          "f1": 0.6792452830188679,
+          "pr_auc": 0.5142857142857142
+        },
+        "logistic_regression": {
+          "precision": 0.7013251783893986,
+          "recall": 0.8493827160493828,
+          "f1": 0.768285873813512,
+          "pr_auc": 0.7894460737851768
+        },
+        "random_forest": {
+          "precision": 0.7959427207637232,
+          "recall": 0.8234567901234567,
+          "f1": 0.8094660194174758,
+          "pr_auc": 0.8887194751114269
+        }
+      }
+    }
+  ],
+  "cost_overrun": [
+    {
+      "train_period": [
+        "2025-02",
+        "2025-03"
+      ],
+      "validation_period": "2025-04",
+      "train_rows": 3275,
+      "validation_rows": 1607,
+      "status": "evaluated",
+      "models": {
+        "dummy_classifier": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pr_auc": 0.20535158680771623
+        },
+        "logistic_regression": {
+          "precision": 0.975,
+          "recall": 0.11818181818181818,
+          "f1": 0.21081081081081082,
+          "pr_auc": 0.7291455582214413
+        },
+        "random_forest": {
+          "precision": 0.8823529411764706,
+          "recall": 0.22727272727272727,
+          "f1": 0.3614457831325301,
+          "pr_auc": 0.7292012516962691
+        }
+      }
+    },
+    {
+      "train_period": [
+        "2025-02",
+        "2025-04"
+      ],
+      "validation_period": "2025-05",
+      "train_rows": 4882,
+      "validation_rows": 1575,
+      "status": "evaluated",
+      "models": {
+        "dummy_classifier": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "pr_auc": 0.20126984126984127
+        },
+        "logistic_regression": {
+          "precision": 1.0,
+          "recall": 0.1829652996845426,
+          "f1": 0.30933333333333335,
+          "pr_auc": 0.722006189463806
+        },
+        "random_forest": {
+          "precision": 0.9222222222222223,
+          "recall": 0.2618296529968454,
+          "f1": 0.40786240786240785,
+          "pr_auc": 0.7408497478965561
+        }
+      }
+    }
+  ]
+}

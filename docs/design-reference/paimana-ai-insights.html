@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script type="application/json" data-od-external-dependencies>["https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"]</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIRMAN AI — AI Insights</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAFA;--surface:#ffffff;--surface-alt:#F0F3F8;
+  --navy:#0B2545;--navy-light:#16345E;--navy-dark:#081A33;
+  --accent:#1E5FCC;--accent-light:#6E9BF2;
+  --text:#0B2545;--text-2:#4b5563;--text-3:#5B6472;--text-inv:#f8fafc;
+  --border:#d1d5db;--border-soft:#E4E7EC;
+  --critical:#C1352D;--critical-bg:#fef2f2;--critical-border:#fecaca;
+  --high:#C2751A;--high-bg:#fff7ed;--high-border:#fed7aa;
+  --medium:#A16207;--medium-bg:#fffbeb;--medium-border:#fde68a;
+  --low:#1E8E5A;--low-bg:#f0fdf4;--low-border:#bbf7d0;
+  --font-body:'Inter',system-ui,sans-serif;
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;
+  --space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;
+  --radius-sm:6px;--radius-md:10px;--radius-lg:16px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,.12);
+}
+html{font-size:14px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden;height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* LAYOUT */
+.layout{display:flex;height:100vh}
+.sidebar{width:220px;background:var(--navy);color:var(--text-inv);display:flex;flex-direction:column;flex-shrink:0;z-index:10}
+.sidebar-logo{padding:var(--space-5) var(--space-5);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:var(--space-3)}
+.sidebar-logo svg{width:28px;height:28px;flex-shrink:0}
+.sidebar-logo-text{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.sidebar-logo-sub{font-size:10px;font-weight:500;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.sidebar-nav{flex:1;padding:var(--space-3) 0}
+.nav-item{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-5);color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.nav-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.nav-item.active{background:rgba(255,255,255,.1);color:#fff}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.7}
+.nav-item.active svg{opacity:1}
+.sidebar-footer{padding:var(--space-4) var(--space-5);border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.35)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:52px;background:var(--surface);border-bottom:1px solid var(--border-soft);display:flex;align-items:center;padding:0 var(--space-6);gap:var(--space-4);flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600}
+.topbar-spacer{flex:1}
+.topbar-search{position:relative;width:240px}
+.topbar-search input{width:100%;height:32px;border:1px solid var(--border-soft);border-radius:var(--radius-sm);padding:0 var(--space-3) 0 32px;font-size:12px;font-family:var(--font-body);background:var(--surface-alt);transition:border-color .15s}
+.topbar-search input:focus{outline:none;border-color:var(--accent)}
+.topbar-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-3)}
+.topbar-date{font-size:12px;color:var(--text-3);white-space:nowrap}
+.topbar-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);cursor:pointer;color:var(--text-2);position:relative}
+.topbar-icon:hover{background:var(--surface-alt)}
+.topbar-icon svg{width:18px;height:18px}
+.notif-badge{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--critical);border-radius:50%;border:2px solid var(--surface)}
+.topbar-avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:var(--text-inv);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
+
+/* CHAT LAYOUT */
+.chat-layout{flex:1;display:flex;min-height:0}
+.chat-rail{width:260px;background:var(--surface);border-right:1px solid var(--border-soft);display:flex;flex-direction:column;flex-shrink:0}
+.chat-rail-header{padding:var(--space-4) var(--space-5);border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between}
+.chat-rail-header h3{font-size:13px;font-weight:600}
+.btn-new-chat{height:30px;padding:0 var(--space-3);background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:500;font-family:var(--font-body);cursor:pointer;display:flex;align-items:center;gap:var(--space-1)}
+.btn-new-chat:hover{background:var(--accent-light)}
+.btn-new-chat svg{width:14px;height:14px}
+.chat-history{flex:1;overflow-y:auto;padding:var(--space-2)}
+.history-group-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);padding:var(--space-3) var(--space-3) var(--space-1)}
+.history-item{padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background .1s}
+.history-item:hover{background:var(--surface-alt)}
+.history-item.active{background:var(--accent);color:#fff}
+.history-item .history-preview{display:block;font-size:11px;color:var(--text-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item.active .history-preview{color:rgba(255,255,255,.7)}
+
+/* CHAT THREAD */
+.chat-thread{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-messages{flex:1;overflow-y:auto;padding:var(--space-6) var(--space-8)}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:var(--space-8);text-align:center}
+.empty-state-icon{width:56px;height:56px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:var(--space-5)}
+.empty-state-icon svg{width:28px;height:28px;color:#fff}
+.empty-state h2{font-size:22px;font-weight:700;margin-bottom:var(--space-2)}
+.empty-state p{font-size:13px;color:var(--text-3);max-width:420px;margin-bottom:var(--space-6)}
+.suggestion-chips{display:flex;flex-wrap:wrap;gap:var(--space-2);justify-content:center;max-width:560px;margin-bottom:var(--space-8)}
+.suggestion-chip{padding:var(--space-2) var(--space-4);background:var(--surface);border:1px solid var(--border-soft);border-radius:20px;font-size:12px;color:var(--text-2);cursor:pointer;transition:all .15s;font-family:var(--font-body)}
+.suggestion-chip:hover{border-color:var(--accent);color:var(--accent);background:#eff6ff}
+.empty-input-wrapper{width:100%;max-width:600px}
+.empty-input-box{width:100%;display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-3) var(--space-4);box-shadow:var(--shadow-sm)}
+.empty-input-box input{flex:1;border:none;outline:none;font-size:14px;font-family:var(--font-body);background:transparent;color:var(--text)}
+.empty-input-box input::placeholder{color:var(--text-3)}
+.empty-input-box .send-btn{width:32px;height:32px;background:var(--accent);border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.empty-input-box .send-btn:hover{background:var(--accent-light)}
+.empty-input-box .send-btn svg{width:16px;height:16px}
+
+/* CONVERSATION STATE */
+.messages-container{display:flex;flex-direction:column;gap:var(--space-6)}
+.msg-user{display:flex;justify-content:flex-end}
+.msg-user-bubble{max-width:520px;background:var(--accent);color:#fff;padding:var(--space-3) var(--space-4);border-radius:12px 12px 2px 12px;font-size:13px;line-height:1.6}
+.msg-assistant{display:flex;gap:var(--space-3)}
+.msg-avatar{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px}
+.msg-assistant-card{max-width:680px;background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:var(--space-5);box-shadow:var(--shadow-sm)}
+.msg-text{font-size:13px;line-height:1.7;color:var(--text);margin-bottom:var(--space-4)}
+.msg-text strong{font-weight:600}
+.msg-text .highlight{color:var(--accent);font-weight:500}
+
+/* KPI MINI CARDS IN RESPONSE */
+.response-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin-bottom:var(--space-4)}
+.resp-kpi{background:var(--surface-alt);border-radius:var(--radius-sm);padding:var(--space-3) var(--space-4);border-left:3px solid var(--border)}
+.resp-kpi.critical{border-left-color:var(--critical)}
+.resp-kpi.high{border-left-color:var(--high)}
+.resp-kpi.medium{border-left-color:var(--medium)}
+.resp-kpi.low{border-left-color:var(--low)}
+.resp-kpi.accent{border-left-color:var(--accent)}
+.resp-kpi.navy{border-left-color:var(--navy)}
+.resp-kpi-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:2px}
+.resp-kpi-value{font-size:18px;font-weight:700;color:var(--text);font-family:var(--font-mono)}
+.resp-kpi-sub{font-size:10px;color:var(--text-3);margin-top:1px}
+
+/* RESPONSE TABLE */
+.response-table{width:100%;border-collapse:collapse;margin-bottom:var(--space-4);font-size:12px}
+.response-table th{text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);padding:var(--space-2) var(--space-3);border-bottom:2px solid var(--border-soft);background:var(--surface-alt)}
+.response-table td{padding:var(--space-2) var(--space-3);border-bottom:1px solid var(--border-soft);color:var(--text);font-size:12px}
+.response-table tr:last-child td{border-bottom:none}
+.response-table .num{font-family:var(--font-mono);text-align:right}
+.response-table .status-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag-critical{background:var(--critical-bg);color:var(--critical);border:1px solid var(--critical-border)}
+.tag-high{background:var(--high-bg);color:var(--high);border:1px solid var(--high-border)}
+.tag-medium{background:var(--medium-bg);color:var(--medium);border:1px solid var(--medium-border)}
+.tag-low{background:var(--low-bg);color:var(--low);border:1px solid var(--low-border)}
+
+/* RESPONSE MINI CHART */
+.response-chart{margin-bottom:var(--space-4)}
+.response-chart-header{font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:var(--space-2)}
+
+/* SOURCE CITATIONS */
+.response-sources{display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;padding-top:var(--space-3);border-top:1px solid var(--border-soft)}
+.source-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-right:var(--space-1)}
+.source-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;background:var(--surface-alt);border:1px solid var(--border-soft);border-radius:12px;font-size:10px;color:var(--text-2);white-space:nowrap}
+.source-chip svg{width:10px;height:10px;color:var(--accent);flex-shrink:0}
+
+/* INPUT BAR */
+.chat-input-bar{padding:var(--space-4) var(--space-8);background:var(--surface);border-top:1px solid var(--border-soft);flex-shrink:0}
+.input-wrapper{display:flex;align-items:flex-end;gap:var(--space-3);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);box-shadow:var(--shadow-sm);transition:border-color .15s}
+.input-wrapper:focus-within{border-color:var(--accent)}
+.input-wrapper textarea{flex:1;border:none;outline:none;font-size:13px;font-family:var(--font-body);resize:none;background:transparent;color:var(--text);line-height:1.5;min-height:20px;max-height:120px}
+.input-wrapper textarea::placeholder{color:var(--text-3)}
+.input-actions{display:flex;align-items:center;gap:var(--space-1);flex-shrink:0;padding-bottom:2px}
+.input-icon-btn{width:28px;height:28px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-3);transition:all .15s}
+.input-icon-btn:hover{background:var(--surface-alt);color:var(--text-2)}
+.input-icon-btn svg{width:16px;height:16px}
+.send-btn-main{width:32px;height:32px;background:var(--accent);border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;transition:background .15s}
+.send-btn-main:hover{background:var(--accent-light)}
+.send-btn-main svg{width:16px;height:16px}
+.chat-footer-note{text-align:center;padding:var(--space-2) 0 0;font-size:10px;color:var(--text-3)}
+
+/* TYPING INDICATOR */
+.typing-indicator{display:flex;gap:4px;padding:var(--space-3) var(--space-4);align-items:center}
+.typing-dot{width:6px;height:6px;background:var(--text-3);border-radius:50%;animation:typingPulse 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingPulse{0%,60%,100%{opacity:.3;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
+
+/* TREND MINI IN RESPONSE */
+.mini-trend{display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-1)}
+.mini-trend-bar{height:4px;border-radius:2px;flex:1;background:var(--surface-alt)}
+.mini-trend-fill{height:100%;border-radius:2px}
+.mini-trend-label{font-size:10px;color:var(--text-3);white-space:nowrap}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-3)}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" data-od-id="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="var(--accent)"/><path d="M8 20V8l6 6 6-6v12" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <div class="sidebar-logo-text">NIRMAN AI</div>
+      <div class="sidebar-logo-sub">Govt. of India</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item" data-od-id="nav-command-center">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="5" height="5" rx="1"/><rect x="9.5" y="1.5" width="5" height="5" rx="1"/><rect x="1.5" y="9.5" width="5" height="5" rx="1"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg>
+      Command Center
+    </div>
+    <div class="nav-item" data-od-id="nav-risk-radar">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><line x1="8" y1="8.5" x2="10.5" y2="10.5"/></svg>
+      Risk Radar
+    </div>
+    <div class="nav-item" data-od-id="nav-projects">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><line x1="2" y1="6.5" x2="14" y2="6.5"/><line x1="5.5" y1="3" x2="5.5" y2="6.5"/></svg>
+      Projects
+    </div>
+    <div class="nav-item" data-od-id="nav-state-intel">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M2 8h12M8 2c-2 2-2 4-2 6s0 4 2 6M8 2c2 2 2 4 2 6s0 4-2 6"/></svg>
+      State Intelligence
+    </div>
+    <div class="nav-item" data-od-id="nav-sector-intel">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="9" width="3" height="5.5" rx=".5"/><rect x="6.5" y="5.5" width="3" height="9" rx=".5"/><rect x="11.5" y="2" width="3" height="12.5" rx=".5"/></svg>
+      Sector Intelligence
+    </div>
+    <div class="nav-item active" data-od-id="nav-ai-insights">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12.5V4a1 1 0 011-1h8a1 1 0 011 1v5a1 1 0 01-1 1H5.5L3 12.5z"/><circle cx="6.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="9.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+      AI Insights
+    </div>
+  </nav>
+  <div class="sidebar-footer">NIRMAN AI v2.4.1 &middot; Classified</div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <span class="topbar-title" data-od-id="topbar-title">AI Insights</span>
+    <span class="topbar-spacer"></span>
+    <div class="topbar-search">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="4.5"/><line x1="10.2" y1="10.2" x2="14" y2="14"/></svg>
+      <input type="text" placeholder="Search...">
+    </div>
+    <span class="topbar-date">Data as of: 01 Sep 2026, 09:30 IST</span>
+    <div class="topbar-icon">
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 6.5a4.5 4.5 0 10-9 0c0 5-2.25 6.5-2.25 6.5h13.5s-2.25-1.5-2.25-6.5"/><path d="M10.3 15.5a1.5 1.5 0 01-2.6 0"/></svg>
+      <span class="notif-badge"></span>
+    </div>
+    <div class="topbar-avatar">AK</div>
+  </header>
+
+  <!-- CHAT LAYOUT -->
+  <div class="chat-layout">
+
+    <!-- LEFT RAIL — Chat History -->
+    <aside class="chat-rail" data-od-id="chat-rail">
+      <div class="chat-rail-header">
+        <h3>Conversations</h3>
+        <button class="btn-new-chat">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="7" y1="2" x2="7" y2="12"/><line x1="2" y1="7" x2="12" y2="7"/></svg>
+          New
+        </button>
+      </div>
+      <div class="chat-history" data-od-id="chat-history">
+        <div class="history-group-label">Today</div>
+        <div class="history-item active">
+          High-risk railway projects above ₹5,000 Cr
+          <span class="history-preview">Identified 12 projects with combined value...</span>
+        </div>
+        <div class="history-item">
+          Delayed projects by state comparison
+          <span class="history-preview">UP leads with 47 delayed projects across...</span>
+        </div>
+        <div class="history-item">
+          Sector-wise cost overrun analysis
+          <span class="history-preview">Roads & Highways sector shows highest...</span>
+        </div>
+        <div class="history-group-label">Yesterday</div>
+        <div class="history-item">
+          Flash Report July 2026 summary
+          <span class="history-preview">Overall portfolio shows 48% avg physical...</span>
+        </div>
+        <div class="history-item">
+          Coal mining project risks
+          <span class="history-preview">8 coal projects flagged with environmental...</span>
+        </div>
+        <div class="history-group-label">This Week</div>
+        <div class="history-item">
+          Compare Maharashtra vs Gujarat projects
+          <span class="history-preview">Maharashtra leads in total value at ₹1.2L Cr...</span>
+        </div>
+        <div class="history-item">
+          AI confidence model accuracy
+          <span class="history-preview">Model accuracy improved to 94.2% based on...</span>
+        </div>
+        <div class="history-item">
+          Oil & gas sector risk trends
+          <span class="history-preview">Risk scores trending upward for 3 consecutive...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CHAT THREAD -->
+    <div class="chat-thread" data-od-id="chat-thread">
+
+      <!-- Chat Messages -->
+      <div class="chat-messages">
+        <div class="messages-container">
+
+          <!-- USER MSG 1 -->
+          <div class="msg-user" data-od-id="user-message-1">
+            <div class="msg-user-bubble">Show high-risk railway projects above ₹5,000 crore</div>
+          </div>
+
+          <!-- ASSISTANT MSG 1 -->
+          <div class="msg-assistant" data-od-id="assistant-message-1">
+            <div class="msg-avatar">AI</div>
+            <div class="msg-assistant-card">
+
+              <div class="msg-text">
+                I found <strong>12 high-risk railway projects</strong> valued above ₹5,000 crore across the NIRMAN portfolio. The combined value of these projects is <span class="highlight">₹1,42,800 crore</span>, representing <strong>18.7%</strong> of the total railway sector allocation. Key concerns include significant schedule delays and cost overruns driven by land acquisition challenges and contractor bottlenecks.
+              </div>
+
+              <!-- KPI Mini Cards -->
+              <div class="response-kpis" data-od-id="response-kpis">
+                <div class="resp-kpi critical">
+                  <div class="resp-kpi-label">Critical Risk</div>
+                  <div class="resp-kpi-value">5</div>
+                  <div class="resp-kpi-sub">41.7% of filtered</div>
+                </div>
+                <div class="resp-kpi high">
+                  <div class="resp-kpi-label">High Risk</div>
+                  <div class="resp-kpi-value">7</div>
+                  <div class="resp-kpi-sub">58.3% of filtered</div>
+                </div>
+                <div class="resp-kpi accent">
+                  <div class="resp-kpi-label">Combined Value</div>
+                  <div class="resp-kpi-value">₹1.43L Cr</div>
+                  <div class="resp-kpi-sub">18.7% of sector</div>
+                </div>
+              </div>
+
+              <!-- Data Table -->
+              <div class="response-table-wrapper" data-od-id="response-table">
+                <table class="response-table">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Project</th>
+                      <th>State</th>
+                      <th class="num">Value (₹ Cr)</th>
+                      <th class="num">Risk Score</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Mumbai–Ahmedabad HSR Extension</td>
+                      <td>Maharashtra</td>
+                      <td class="num">52,400</td>
+                      <td class="num" style="color:var(--critical);font-weight:600">96</td>
+                      <td><span class="status-tag tag-critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>Delhi–Varanasi HSR Corridor</td>
+                      <td>Uttar Pradesh</td>
+                      <td class="num">38,200</td>
+                      <td class="num" style="color:var(--critical);font-weight:600">91</td>
+                      <td><span class="status-tag tag-critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>Eastern Dedicated Freight Corridor</td>
+                      <td>Bihar / Jharkhand</td>
+                      <td class="num">21,500</td>
+                      <td class="num" style="color:var(--critical);font-weight:600">88</td>
+                      <td><span class="status-tag tag-critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Chennai–Bengaluru Semi-HSR</td>
+                      <td>Tamil Nadu / Karnataka</td>
+                      <td class="num">14,800</td>
+                      <td class="num" style="color:var(--critical);font-weight:600">84</td>
+                      <td><span class="status-tag tag-critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>Udhampur–Srinagar–Baramulla Rail Link</td>
+                      <td>Jammu & Kashmir</td>
+                      <td class="num">15,900</td>
+                      <td class="num" style="color:var(--critical);font-weight:600">82</td>
+                      <td><span class="status-tag tag-critical">Critical</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Source Citations -->
+              <div class="response-sources" data-od-id="response-sources">
+                <span class="source-label">Sources:</span>
+                <span class="source-chip">
+                  <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="4"/></svg>
+                  Table 6 — All Ongoing Projects, July 2026 Flash Report
+                </span>
+                <span class="source-chip">
+                  <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="4"/></svg>
+                  Table 12 — Risk Assessment Matrix, NIRMAN Risk Engine
+                </span>
+                <span class="source-chip">
+                  <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="4"/></svg>
+                  Ministry of Railways — Project Status Report Q2 FY27
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- USER MSG 2 -->
+          <div class="msg-user" data-od-id="user-message-2">
+            <div class="msg-user-bubble">What is the average schedule delay across all sectors?</div>
+          </div>
+
+          <!-- ASSISTANT MSG 2 -->
+          <div class="msg-assistant" data-od-id="assistant-message-2">
+            <div class="msg-avatar">AI</div>
+            <div class="msg-assistant-card">
+
+              <div class="msg-text">
+                The <strong>average schedule delay</strong> across all 1,248 ongoing projects is <span class="highlight">11.6 months</span>. Roads & Highways leads with 14.8 months average delay, followed by Railways at 13.2 months. The Power sector shows the lowest average delay at 7.3 months. The overall delay trend has been <strong>increasing</strong> over the last 3 quarters, with a sharp uptick from Q1'26 onwards.
+              </div>
+
+              <!-- KPI Mini Cards -->
+              <div class="response-kpis" data-od-id="response-kpis-2">
+                <div class="resp-kpi high">
+                  <div class="resp-kpi-label">Avg Delay</div>
+                  <div class="resp-kpi-value">11.6 mo</div>
+                  <div class="resp-kpi-sub">All 1,248 projects</div>
+                </div>
+                <div class="resp-kpi critical">
+                  <div class="resp-kpi-label">Worst Sector</div>
+                  <div class="resp-kpi-value">14.8 mo</div>
+                  <div class="resp-kpi-sub">Roads & Highways</div>
+                </div>
+                <div class="resp-kpi low">
+                  <div class="resp-kpi-label">Best Sector</div>
+                  <div class="resp-kpi-value">7.3 mo</div>
+                  <div class="resp-kpi-sub">Power</div>
+                </div>
+              </div>
+
+              <!-- Mini Chart — Sector Delays -->
+              <div class="response-chart" data-od-id="response-chart-delays">
+                <div class="response-chart-header">Average Schedule Delay by Sector (months)</div>
+                <svg width="100%" viewBox="0 0 600 130" style="display:block">
+                  <!-- Roads -->
+                  <text x="0" y="14" fill="var(--text-2)" font-size="11" font-family="var(--font-body)">Roads</text>
+                  <rect x="70" y="3" width="382" height="16" rx="2" fill="var(--high)" opacity=".8"/>
+                  <text x="460" y="15" fill="var(--text)" font-size="11" font-family="var(--font-mono)" font-weight="600">14.8</text>
+                  <!-- Railways -->
+                  <text x="0" y="38" fill="var(--text-2)" font-size="11" font-family="var(--font-body)">Railways</text>
+                  <rect x="70" y="27" width="340" height="16" rx="2" fill="var(--high)" opacity=".7"/>
+                  <text x="418" y="39" fill="var(--text)" font-size="11" font-family="var(--font-mono)" font-weight="600">13.2</text>
+                  <!-- Steel -->
+                  <text x="0" y="62" fill="var(--text-2)" font-size="11" font-family="var(--font-body)">Steel</text>
+                  <rect x="70" y="51" width="272" height="16" rx="2" fill="var(--medium)" opacity=".7"/>
+                  <text x="350" y="63" fill="var(--text)" font-size="11" font-family="var(--font-mono)" font-weight="600">10.6</text>
+                  <!-- Telecom -->
+                  <text x="0" y="86" fill="var(--text-2)" font-size="11" font-family="var(--font-body)">Telecom</text>
+                  <rect x="70" y="75" width="230" height="16" rx="2" fill="var(--medium)" opacity=".6"/>
+                  <text x="308" y="87" fill="var(--text)" font-size="11" font-family="var(--font-mono)" font-weight="600">9.0</text>
+                  <!-- Power -->
+                  <text x="0" y="110" fill="var(--text-2)" font-size="11" font-family="var(--font-body)">Power</text>
+                  <rect x="70" y="99" width="188" height="16" rx="2" fill="var(--low)" opacity=".7"/>
+                  <text x="266" y="111" fill="var(--text)" font-size="11" font-family="var(--font-mono)" font-weight="600">7.3</text>
+                </svg>
+              </div>
+
+              <!-- Source Citations -->
+              <div class="response-sources" data-od-id="response-sources-2">
+                <span class="source-label">Sources:</span>
+                <span class="source-chip">
+                  <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="4"/></svg>
+                  Table 3 — Schedule Delays, July 2026 Flash Report
+                </span>
+                <span class="source-chip">
+                  <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="4"/></svg>
+                  Table 14 — Sector-wise Performance, NIRMAN Analytics
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ASSISTANT TYPING INDICATOR -->
+          <div class="msg-assistant" data-od-id="typing-indicator" id="typingIndicator" style="display:none">
+            <div class="msg-avatar">AI</div>
+            <div class="msg-assistant-card" style="padding:var(--space-3) var(--space-4)">
+              <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INPUT BAR -->
+      <div class="chat-input-bar" data-od-id="chat-input-bar">
+        <div class="input-wrapper">
+          <textarea rows="1" placeholder="Ask anything about infrastructure projects..." data-od-id="chat-input"></textarea>
+          <div class="input-actions">
+            <button class="input-icon-btn" title="Attach file">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 7.5l-5.8 5.8a3 3 0 01-4.2-4.2l5.8-5.8a2 2 0 012.8 2.8l-5.7 5.7a1 1 0 01-1.4-1.4L10.5 5"/></svg>
+            </button>
+            <button class="send-btn-main" title="Send">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="8,2 14,8 8,14"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="chat-footer-note">AI insights are generated from available NIRMAN project data and supporting documents.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// Auto-resize textarea
+const textarea = document.querySelector('.chat-input-bar textarea');
+if (textarea) {
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+}
+
+// Sidebar nav
+const navItems = document.querySelectorAll('.nav-item');
+navItems.forEach(item => {
+  item.addEventListener('click', function() {
+    navItems.forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Chat history selection
+const historyItems = document.querySelectorAll('.history-item');
+historyItems.forEach(item => {
+  item.addEventListener('click', function() {
+    historyItems.forEach(i => i.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Chat messaging
+function appendMessage(text, from) {
+  const box = document.getElementById('chatMessages') || document.querySelector('.chat-messages');
+  const empty = document.getElementById('chatEmpty');
+  if (empty) empty.remove();
+  const container = box.querySelector('.messages-container') || box;
+  const wrapper = document.createElement('div');
+  wrapper.className = from === 'user' ? 'msg-user' : 'msg-assistant';
+  if (from === 'ai') {
+    wrapper.innerHTML = '<div class="msg-avatar">AI</div><div class="msg-assistant-card"><div class="msg-text">' + text + '</div></div>';
+  } else {
+    wrapper.innerHTML = '<div class="msg-user-bubble">' + text + '</div>';
+  }
+  container.appendChild(wrapper);
+  box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const indicator = document.getElementById('typingIndicator');
+  if (indicator) indicator.style.display = '';
+}
+
+function hideTyping() {
+  const indicator = document.getElementById('typingIndicator');
+  if (indicator) indicator.style.display = 'none';
+}
+
+function askChip(chip) { sendChat(chip.textContent); }
+
+function sendChat(text) {
+  if (!text || !text.trim()) return;
+  appendMessage(text.trim(), 'user');
+  const input = document.getElementById('chatInput');
+  if (input) { input.value = ''; input.style.height = 'auto'; }
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    appendMessage('Sample response — wire this to the model API.', 'ai');
+  }, 800);
+}
+
+// Send button click
+const sendBtn = document.getElementById('chatSend') || document.querySelector('.send-btn-main');
+if (sendBtn) {
+  sendBtn.addEventListener('click', () => {
+    const input = document.getElementById('chatInput') || document.querySelector('.chat-input-bar textarea');
+    if (input) sendChat(input.value.trim());
+  });
+}
+
+// Enter to send (Shift+Enter for newline)
+const chatInput = document.getElementById('chatInput') || document.querySelector('.chat-input-bar textarea');
+if (chatInput) {
+  chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendChat(e.target.value.trim());
+    }
+  });
+}
+
+// Scroll chat to bottom on load
+const chatMessages = document.querySelector('.chat-messages');
+if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+</script>
+</body>
+</html>

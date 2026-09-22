@@ -1,0 +1,4 @@
+{
+  "status": "NOT_RELIABLE",
+  "reason": "The current corpus has only five usable report periods; calibration would overfit the small validation window."
+}

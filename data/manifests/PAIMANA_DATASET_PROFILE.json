@@ -1,0 +1,21 @@
+{
+  "documents_total": 21,
+  "documents_processed": 21,
+  "documents_failed": 0,
+  "unique_projects": 1723,
+  "project_month_observations": 8180,
+  "duplicate_project_period_count": 1023,
+  "reporting_range": {
+    "earliest": "2025-02",
+    "latest": "2025-06"
+  },
+  "field_coverage": {
+    "project_id": 1.0,
+    "project_name": 1.0,
+    "state": 1.0,
+    "sector": 1.0,
+    "original_cost": 1.0,
+    "expenditure": 1.0,
+    "physical_progress": 0.9083129584352079
+  }
+}

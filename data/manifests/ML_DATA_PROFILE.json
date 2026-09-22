@@ -1,0 +1,22 @@
+{
+  "source_documents": 21,
+  "documents_with_rows": 5,
+  "documents_without_rows": 16,
+  "source_rows": 8180,
+  "source_projects": 1723,
+  "source_periods": ["2025-02", "2025-03", "2025-04", "2025-05", "2025-06"],
+  "duplicate_project_period_rows": 1023,
+  "physical_progress_missingness": 0.0916870415647921,
+  "targets": {
+    "implementation_risk": "SUPPORTED",
+    "cost_overrun": "PARTIALLY_SUPPORTED",
+    "time_overrun": "NOT_SUPPORTED"
+  },
+  "early_warning": {
+    "1_month": "EVALUABLE",
+    "3_month": "NOT_EVALUABLE",
+    "6_month": "NOT_EVALUABLE"
+  },
+  "feature_version": "paimana-temporal-v1",
+  "status": "AUDIT_SNAPSHOT_REGENERATE_AFTER_CORPUS_REBUILD"
+}

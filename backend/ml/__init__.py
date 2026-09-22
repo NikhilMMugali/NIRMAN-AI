@@ -1,0 +1,1 @@
+"""Leakage-safe temporal modeling utilities for the PAIMANA corpus."""

@@ -1,0 +1,25 @@
+{
+  "model_id": "implementation_risk_rf_v1",
+  "model_name": "RandomForestClassifier",
+  "target": "implementation_risk_target",
+  "feature_version": "paimana-temporal-v1",
+  "features": [
+    "physical_progress",
+    "expenditure",
+    "original_cost",
+    "revised_cost",
+    "progress_delta_1m",
+    "expenditure_delta_1m",
+    "progress_mean_3m",
+    "progress_std_3m",
+    "stagnant_months_3m",
+    "observations_to_date",
+    "months_elapsed",
+    "reporting_gap_months"
+  ],
+  "n_samples": 6457,
+  "n_estimators": 200,
+  "max_depth": 6,
+  "artifact_path": "backend/ml/saved_models/implementation_risk_rf.joblib",
+  "status": "VALIDATED_PROTOTYPE"
+}

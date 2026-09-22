@@ -1,0 +1,35 @@
+project_id:
+  aliases:
+    - PROJECT ID
+    - Project ID
+    - project_id
+project_name:
+  aliases:
+    - PROJECT NAME
+    - Project Name
+    - project_name
+original_cost:
+  aliases:
+    - ORIGINAL COST
+    - Original Cost
+    - original_cost
+revised_cost:
+  aliases:
+    - REVISED COST
+    - Revised Cost
+    - revised_cost
+expenditure:
+  aliases:
+    - EXPENDITURE
+    - CUMULATIVE EXPENDITURE
+    - expenditure
+physical_progress:
+  aliases:
+    - PHYSICAL PROGRESS
+    - Physical Progress
+    - physical_progress
+reporting_month:
+  aliases:
+    - REPORTING MONTH
+    - Reporting Month
+    - reporting_month

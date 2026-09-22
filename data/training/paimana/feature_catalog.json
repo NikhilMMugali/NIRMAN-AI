@@ -1,0 +1,17 @@
+{
+  "version": "paimana-temporal-v1",
+  "features": [
+    "physical_progress",
+    "expenditure",
+    "original_cost",
+    "revised_cost",
+    "progress_delta_1m",
+    "expenditure_delta_1m",
+    "progress_mean_3m",
+    "progress_std_3m",
+    "stagnant_months_3m",
+    "observations_to_date",
+    "months_elapsed",
+    "reporting_gap_months"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "implementation_risk": {
+    "status": "SUPPORTED",
+    "definition": "next observed month has no physical progress increase"
+  },
+  "cost_overrun": {
+    "status": "PARTIALLY_SUPPORTED",
+    "definition": "next observed revised cost exceeds original cost by more than 5%"
+  },
+  "time_overrun": {
+    "status": "NOT_SUPPORTED",
+    "reason": "no planned or actual completion dates are populated"
+  }
+}
