@@ -13,17 +13,20 @@ class ApiClient {
   private timeoutMs: number;
 
   constructor(baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000", timeoutMs = DEFAULT_TIMEOUT_MS) {
-    this.baseUrl = baseUrl.replace(/\/$/, "");
+    let clean = (baseUrl || "").trim().replace(/\/+$/, "");
+    clean = clean.replace(/\/api\/v1$/, "").replace(/\/api$/, "");
+    this.baseUrl = clean;
     this.timeoutMs = timeoutMs;
   }
-
 
   private async request<T>(path: string): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
 
     try {
-      const response = await fetch(`${this.baseUrl}${path}`, {
+      const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+      const url = `${this.baseUrl}${normalizedPath}`;
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Accept: "application/json",
