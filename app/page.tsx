@@ -9,7 +9,7 @@ const defaultKpis = [
   { label: "Total Projects", value: "1,723", trend: "PAIMANA Corpus", tone: "up" },
   { label: "Cost Overrun", value: "+20.1%", trend: "Revised vs Original", tone: "neutral" },
   { label: "Total Expenditure", value: "₹14.7L Cr", trend: "Utilized", tone: "neutral" },
-  { label: "At-Risk Projects", value: "312", trend: "Monitored", tone: "neutral" },
+  { label: "At-Risk Projects", value: "312", trend: "Monitored", tone: "down" },
 ];
 
 const fallbackProjects = [
@@ -21,6 +21,7 @@ const fallbackProjects = [
 
 export default function Home() {
   const [activeNav, setActiveNav] = useState("Command Center");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [projects, setProjects] = useState<any[]>(fallbackProjects);
   const [selectedProjectId, setSelectedProjectId] = useState<string>("N04000077");
   const [projectRisk, setProjectRisk] = useState<any | null>(null);
@@ -33,7 +34,7 @@ export default function Home() {
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
 
   async function loadInitialData() {
     setLoading(true);
@@ -129,7 +130,7 @@ export default function Home() {
   const kpis = summaryData
     ? [
         { label: "Total Projects", value: summaryData.total_projects?.toLocaleString() || "1,723", trend: "PAIMANA Corpus", tone: "up" },
-        { label: "Total Original Budget", value: `₹${(summaryData.total_original_cost_cr / 1000).toFixed(1)}k Cr`, trend: "Sanctioned", tone: "neutral" },
+        { label: "Total Budget", value: `₹${(summaryData.total_original_cost_cr / 1000).toFixed(1)}k Cr`, trend: "Sanctioned", tone: "neutral" },
         { label: "Total Expenditure", value: `₹${(summaryData.total_expenditure_cr / 1000).toFixed(1)}k Cr`, trend: "Utilized", tone: "neutral" },
         { label: "At-Risk Projects", value: summaryData.at_risk_projects_count?.toString() || "312", trend: "Monitored", tone: "down" },
       ]
@@ -183,9 +184,22 @@ export default function Home() {
 
   const selectedProjectObj = projects.find((p) => p.id === selectedProjectId) || filteredProjects[0] || projects[0];
 
+  function handleNavClick(label: string) {
+    setActiveNav(label);
+    setIsMobileMenuOpen(false);
+  }
+
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      {/* Mobile Backdrop Overlay */}
+      <div
+        className={`sidebar-overlay ${isMobileMenuOpen ? "open" : ""}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Sidebar Navigation Drawer */}
+      <aside className={`sidebar ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="sidebar-logo">
           <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
             <rect width="28" height="28" rx="6" fill="var(--accent)" />
@@ -203,29 +217,43 @@ export default function Home() {
               key={item.label}
               type="button"
               className={`nav-item ${activeNav === item.label ? "active" : ""}`}
-              onClick={() => setActiveNav(item.label)}
-              style={{ width: "100%", textAlign: "left", background: "none", border: "none", color: "inherit", cursor: "pointer", padding: "0.75rem 1rem", borderRadius: "6px" }}
+              onClick={() => handleNavClick(item.label)}
             >
               <span>{item.label}</span>
             </button>
           ))}
         </nav>
 
-        <div className="sidebar-footer">NIRMAN AI v2.4.1 • Prototype Verified</div>
+        <div className="sidebar-footer">NIRMAN AI v2.4.1 • Verified</div>
       </aside>
 
       <main className="main-panel">
         <header className="topbar">
-          <div className="topbar-title">National Infrastructure Command Center</div>
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+
+          <div className="topbar-title">NIRMAN Intelligence</div>
+
           <div className="topbar-search">
             <input
               type="text"
-              placeholder="Search projects, states, sectors, or IDs..."
+              placeholder="Search projects, states..."
               aria-label="Global search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+
           <div className="topbar-meta" style={{ position: "relative" }}>
             <button
               type="button"
@@ -247,10 +275,10 @@ export default function Home() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 12, height: 12, transform: isRefreshing ? "rotate(180deg)" : "none", transition: "transform 0.4s ease" }}>
                 <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
               </svg>
-              {isRefreshing ? "Refreshing..." : "Refresh Data"}
+              <span className="refresh-btn-text">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
             </button>
 
-            <span className="topbar-date">Data cutoff: PAIMANA Jun 2025</span>
+            <span className="topbar-date">PAIMANA Jun 2025</span>
 
             <div
               className="topbar-icon topbar-badge"
@@ -289,9 +317,23 @@ export default function Home() {
         </header>
 
         <div className="content">
+          {/* Quick Mobile Horizontal Navigation Bar */}
+          <div className="mobile-nav-scroll" aria-label="Mobile Navigation">
+            {navItems.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className={`mobile-nav-chip ${activeNav === item.label ? "active" : ""}`}
+                onClick={() => setActiveNav(item.label)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
           <div className="page-header">
             <h1>{activeNav}</h1>
-            <span className="subtitle">Real-time PAIMANA intelligence across {summaryData?.total_projects || 1723} active infrastructure projects</span>
+            <span className="subtitle">PAIMANA real-time monitoring across {summaryData?.total_projects || 1723} infrastructure projects</span>
           </div>
 
           {/* VIEW 1: COMMAND CENTER */}
@@ -314,41 +356,41 @@ export default function Home() {
                       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
                         <circle cx="8" cy="8" r="6" /><line x1="8" y1="5" x2="8" y2="8" /><line x1="8" y1="8" x2="10.5" y2="10" />
                       </svg>
-                      AI Model Risk Evaluation & Government Recommendations
+                      AI Model Risk Evaluation & Interventions
                     </div>
-                    <span>RandomForest Classifier • 21 PAIMANA PDFs</span>
+                    <span>RandomForest Classifier • PAIMANA Corpus</span>
                   </div>
 
                   <HealthCheck />
 
                   {projectRisk ? (
-                    <div className="risk-callout" style={{ marginTop: "1rem" }}>
+                    <div className="risk-callout">
                       <div className={`risk-dot ${projectRisk.risk_category?.toLowerCase() || "high"}`} />
                       <div style={{ width: "100%" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                           <strong className={projectRisk.risk_category?.toLowerCase() || "high"}>
-                            Selected Project: {selectedProjectObj?.name} ({projectRisk.project_id})
+                            {selectedProjectObj?.name} ({projectRisk.project_id})
                           </strong>
                           <span className={`status-badge ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`}>
                             <span className={`status-dot ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`} />
-                            Status: {projectRisk.operational_status || "IN_PROGRESS"}
+                            {projectRisk.operational_status || "IN_PROGRESS"}
                           </span>
                           <span className={`status-badge ${projectRisk.risk_category?.toLowerCase() || "high"}`}>
-                            Predictive Risk: {projectRisk.risk_category} ({(projectRisk.risk_probability * 100).toFixed(1)}%)
+                            Risk: {projectRisk.risk_category} ({(projectRisk.risk_probability * 100).toFixed(1)}%)
                           </span>
                         </div>
-                        <div style={{ fontSize: "0.85rem", opacity: 0.8, marginTop: "0.4rem" }}>
-                          Model Version: <code>{projectRisk.model_version}</code> • Data Cutoff: {projectRisk.data_cutoff}
+                        <div style={{ fontSize: "0.8rem", color: "var(--text-3)", marginTop: "0.4rem" }}>
+                          Model: <code>{projectRisk.model_version}</code> • Data Cutoff: {projectRisk.data_cutoff}
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+                        <div className="risk-callout-grid">
                           {/* DRIVERS COLUMN */}
-                          <div style={{ background: "rgba(255,255,255,0.04)", padding: "0.85rem", borderRadius: "8px", border: "1px solid var(--border-soft)" }}>
-                            <strong style={{ fontSize: "0.85rem", color: "var(--navy)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                          <div className="risk-column-card">
+                            <div className="risk-column-title">
                               Top SHAP Risk Drivers:
-                            </strong>
+                            </div>
                             {projectDrivers.length > 0 ? (
-                              <ul style={{ margin: "0.5rem 0 0 0", paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.6 }}>
+                              <ul style={{ margin: "0.5rem 0 0 0", paddingLeft: "1.1rem", fontSize: "0.85rem", lineHeight: 1.5 }}>
                                 {projectDrivers.map((d: any) => (
                                   <li key={d.feature_name} style={{ marginBottom: "0.35rem" }}>
                                     <strong>{d.feature_name}</strong> ({d.feature_value}): {d.description}
@@ -357,24 +399,24 @@ export default function Home() {
                               </ul>
                             ) : (
                               <div style={{ fontSize: "0.85rem", color: "var(--text-3)", marginTop: "0.4rem" }}>
-                                No critical delay drivers detected for this reporting period.
+                                No critical delay drivers detected for this period.
                               </div>
                             )}
                           </div>
 
                           {/* RECOMMENDATIONS COLUMN */}
-                          <div style={{ background: "rgba(255,255,255,0.04)", padding: "0.85rem", borderRadius: "8px", border: "1px solid var(--border-soft)" }}>
-                            <strong style={{ fontSize: "0.85rem", color: "var(--navy)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                          <div className="risk-column-card">
+                            <div className="risk-column-title">
                               Government Interventions:
-                            </strong>
+                            </div>
                             {projectRecs?.recommendations?.length > 0 ? (
-                              <div className="rec-grid" style={{ marginTop: "0.5rem" }}>
+                              <div className="rec-grid">
                                 {projectRecs.recommendations.map((r: any, idx: number) => (
                                   <div key={idx} className="rec-card">
                                     <div className="rec-header">
                                       <span className="rec-cat">{humanCategoryTitle(r.category)}</span>
                                       <span className={`status-badge ${r.priority === "HIGH" ? "critical" : r.priority === "MEDIUM" ? "high" : "completed"}`}>
-                                        {r.priority} PRIORITY
+                                        {r.priority}
                                       </span>
                                     </div>
                                     <div className="rec-body">
@@ -400,17 +442,17 @@ export default function Home() {
                   ) : (
                     <div className="risk-callout" style={{ marginTop: "1rem" }}>
                       <div className="risk-dot high" />
-                      <div>Loading real PAIMANA model predictions...</div>
+                      <div>Loading PAIMANA risk analysis...</div>
                     </div>
                   )}
                 </div>
 
                 {/* MONITORED PROJECTS TABLE */}
-                <div className="table-panel" style={{ marginTop: "1.5rem" }}>
+                <div className="table-panel">
                   <div className="table-header">
                     <div>
-                      <div className="table-title">PAIMANA Monitored Infrastructure Projects</div>
-                      <div style={{ display: "flex", gap: "6px", marginTop: "6px" }}>
+                      <div className="table-title">PAIMANA Monitored Projects</div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
                         {["ALL", "ACTIVE", "CRITICAL", "STAGNANT", "COMPLETED"].map((f) => (
                           <button
                             key={f}
@@ -421,7 +463,7 @@ export default function Home() {
                               color: statusFilter === f ? "#fff" : "var(--text-2)",
                               border: "1px solid var(--border-soft)",
                               borderRadius: "4px",
-                              padding: "2px 8px",
+                              padding: "3px 8px",
                               fontSize: "10px",
                               fontWeight: 600,
                               cursor: "pointer",
@@ -432,7 +474,7 @@ export default function Home() {
                         ))}
                       </div>
                     </div>
-                    <div className="table-badge">{filteredProjects.length} Projects Displayed</div>
+                    <div className="table-badge">{filteredProjects.length} Projects</div>
                   </div>
                   <div className="table-wrap">
                     <table>
@@ -456,7 +498,7 @@ export default function Home() {
                             onClick={() => fetchProjectDetailData(row.id)}
                             style={{
                               cursor: "pointer",
-                              background: selectedProjectId === row.id ? "rgba(99, 102, 241, 0.12)" : "transparent",
+                              background: selectedProjectId === row.id ? "var(--accent-soft)" : "transparent",
                             }}
                           >
                             <td className="rank">{row.rank}</td>
@@ -510,7 +552,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* RIGHT SIDEBAR VERTICAL ASSISTANT PANEL */}
+              {/* RIGHT SIDEBAR ASSISTANT PANEL */}
               <NirmanAiChat
                 selectedProject={selectedProjectObj}
                 projectRisk={projectRisk}
@@ -549,7 +591,7 @@ export default function Home() {
                           fetchProjectDetailData(p.id);
                           setActiveNav("Command Center");
                         }}
-                        style={{ cursor: "pointer", background: selectedProjectId === p.id ? "rgba(99, 102, 241, 0.12)" : "transparent" }}
+                        style={{ cursor: "pointer", background: selectedProjectId === p.id ? "var(--accent-soft)" : "transparent" }}
                       >
                         <td><code>{p.id}</code></td>
                         <td className="project-name">{p.name}</td>
@@ -584,7 +626,7 @@ export default function Home() {
 
           {/* VIEW 3: PROJECTS / PROJECT DETAIL */}
           {activeNav === "Projects" && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+            <div className="projects-split-view">
               <div className="table-panel">
                 <div className="table-header">
                   <div className="table-title">Select Monitored Project</div>
@@ -604,7 +646,7 @@ export default function Home() {
                         <tr
                           key={p.id}
                           onClick={() => fetchProjectDetailData(p.id)}
-                          style={{ cursor: "pointer", background: selectedProjectId === p.id ? "rgba(99, 102, 241, 0.15)" : "transparent" }}
+                          style={{ cursor: "pointer", background: selectedProjectId === p.id ? "var(--accent-soft)" : "transparent" }}
                         >
                           <td><code>{p.id}</code></td>
                           <td className="project-name">{p.name}</td>
@@ -640,9 +682,9 @@ export default function Home() {
                     </div>
 
                     <h5 style={{ marginTop: "1rem", marginBottom: "0.4rem", color: "var(--navy)" }}>Top SHAP Model Feature Contributions:</h5>
-                    <ul style={{ paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.6 }}>
+                    <ul style={{ paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.5 }}>
                       {projectDrivers.map((d: any) => (
-                        <li key={d.feature_name}><strong>{d.feature_name}</strong> ({d.feature_value}): {d.description}</li>
+                        <li key={d.feature_name} style={{ marginBottom: "4px" }}><strong>{d.feature_name}</strong> ({d.feature_value}): {d.description}</li>
                       ))}
                     </ul>
 
@@ -652,7 +694,7 @@ export default function Home() {
                         {projectRecs.recommendations.map((r: any, idx: number) => (
                           <div key={idx} className="rec-card">
                             <div className="rec-header">
-                              <span className="rec-cat">{r.category}</span>
+                              <span className="rec-cat">{humanCategoryTitle(r.category)}</span>
                               <span className={`status-badge ${r.priority === "HIGH" ? "critical" : r.priority === "MEDIUM" ? "high" : "completed"}`}>
                                 {r.priority}
                               </span>
@@ -748,13 +790,13 @@ export default function Home() {
           {/* VIEW 6: AI INSIGHTS */}
           {activeNav === "AI Insights" && (
             <div className="table-panel" style={{ padding: "1.5rem" }}>
-              <h2>NIRMAN AI Intelligence & Model Inspector</h2>
-              <p style={{ fontSize: "0.9rem", color: "var(--text-dim)" }}>
+              <h2 style={{ color: "var(--navy)", marginTop: 0 }}>NIRMAN AI Intelligence & Model Inspector</h2>
+              <p style={{ fontSize: "0.9rem", color: "var(--text-3)" }}>
                 Evaluating RandomForest classifier predictions, SHAP feature drivers, and transparent rule-engine interventions against PAIMANA ground truth.
               </p>
-              <div style={{ marginTop: "1rem", background: "rgba(255,255,255,0.03)", padding: "1rem", borderRadius: "8px" }}>
-                <h4>Active Model Architecture:</h4>
-                <ul style={{ fontSize: "0.85rem", lineHeight: 1.8 }}>
+              <div style={{ marginTop: "1rem", background: "var(--surface-alt)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--border-soft)" }}>
+                <h4 style={{ margin: "0 0 8px 0", color: "var(--navy)" }}>Active Model Architecture:</h4>
+                <ul style={{ fontSize: "0.85rem", lineHeight: 1.8, margin: 0, paddingLeft: "1.2rem" }}>
                   <li><strong>Classifier:</strong> RandomForest (200 estimators, max_depth=6)</li>
                   <li><strong>Feature Set:</strong> <code>paimana-temporal-v1</code> (12 safe historical features)</li>
                   <li><strong>Model Validation F1:</strong> 0.810 (ROC-AUC: 0.859, PR-AUC: 0.869)</li>
