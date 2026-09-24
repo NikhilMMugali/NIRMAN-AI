@@ -1,5 +1,5 @@
 from functools import lru_cache
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -7,6 +7,13 @@ class Settings(BaseSettings):
     app_name: str = "nirman-ai-api"
     environment: str = "development"
     debug: bool = False
+
+    @field_validator("debug", mode="before")
+    @classmethod
+    def parse_debug_value(cls, v: object) -> bool:
+        if isinstance(v, str):
+            return v.lower() in ("true", "1", "yes", "debug", "dev")
+        return bool(v)
     api_prefix: str = "/api/v1"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
 
