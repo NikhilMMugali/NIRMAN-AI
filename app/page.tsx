@@ -201,14 +201,28 @@ export default function Home() {
       {/* Sidebar Navigation Drawer */}
       <aside className={`sidebar ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="sidebar-logo">
-          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <rect width="28" height="28" rx="6" fill="var(--accent)" />
-            <path d="M8 20V8l6 6 6-6v12" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <div>
-            <div className="sidebar-logo-text">NIRMAN AI</div>
-            <div className="sidebar-logo-sub">Govt. of India</div>
+          <div className="sidebar-brand">
+            <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+              <rect width="28" height="28" rx="6" fill="var(--accent)" />
+              <path d="M8 20V8l6 6 6-6v12" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <div>
+              <div className="sidebar-logo-text">NIRMAN AI</div>
+              <div className="sidebar-logo-sub">Govt. of India</div>
+            </div>
           </div>
+
+          <button
+            type="button"
+            className="sidebar-close-btn"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Close navigation menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
 
         <nav className="sidebar-nav" aria-label="Sidebar navigation">
@@ -242,12 +256,12 @@ export default function Home() {
             </svg>
           </button>
 
-          <div className="topbar-title">NIRMAN Intelligence</div>
+          <div className="topbar-title">NIRMAN AI</div>
 
           <div className="topbar-search">
             <input
               type="text"
-              placeholder="Search projects, states..."
+              placeholder="Search projects..."
               aria-label="Global search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -333,7 +347,7 @@ export default function Home() {
 
           <div className="page-header">
             <h1>{activeNav}</h1>
-            <span className="subtitle">PAIMANA real-time monitoring across {summaryData?.total_projects || 1723} infrastructure projects</span>
+            <span className="subtitle">PAIMANA real-time monitoring across {summaryData?.total_projects || 1723} projects</span>
           </div>
 
           {/* VIEW 1: COMMAND CENTER */}
@@ -358,7 +372,7 @@ export default function Home() {
                       </svg>
                       AI Model Risk Evaluation & Interventions
                     </div>
-                    <span>RandomForest Classifier • PAIMANA Corpus</span>
+                    <span>RandomForest Classifier • PAIMANA</span>
                   </div>
 
                   <HealthCheck />
@@ -367,20 +381,23 @@ export default function Home() {
                     <div className="risk-callout">
                       <div className={`risk-dot ${projectRisk.risk_category?.toLowerCase() || "high"}`} />
                       <div style={{ width: "100%" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                          <strong className={projectRisk.risk_category?.toLowerCase() || "high"}>
-                            {selectedProjectObj?.name} ({projectRisk.project_id})
-                          </strong>
-                          <span className={`status-badge ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`}>
-                            <span className={`status-dot ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`} />
-                            {projectRisk.operational_status || "IN_PROGRESS"}
-                          </span>
-                          <span className={`status-badge ${projectRisk.risk_category?.toLowerCase() || "high"}`}>
-                            Risk: {projectRisk.risk_category} ({(projectRisk.risk_probability * 100).toFixed(1)}%)
-                          </span>
+                        <div className="risk-project-header">
+                          <div className="risk-project-name">
+                            {selectedProjectObj?.name} <code className="risk-proj-id">{projectRisk.project_id}</code>
+                          </div>
+                          <div className="risk-badges-row">
+                            <span className={`status-badge ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`}>
+                              <span className={`status-dot ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`} />
+                              {projectRisk.operational_status || "IN_PROGRESS"}
+                            </span>
+                            <span className={`status-badge ${projectRisk.risk_category?.toLowerCase() || "high"}`}>
+                              Predictive Risk: {projectRisk.risk_category} ({(projectRisk.risk_probability * 100).toFixed(1)}%)
+                            </span>
+                          </div>
                         </div>
+
                         <div style={{ fontSize: "0.8rem", color: "var(--text-3)", marginTop: "0.4rem" }}>
-                          Model: <code>{projectRisk.model_version}</code> • Data Cutoff: {projectRisk.data_cutoff}
+                          Model: <code>{projectRisk.model_version}</code> • Cutoff: {projectRisk.data_cutoff}
                         </div>
 
                         <div className="risk-callout-grid">
