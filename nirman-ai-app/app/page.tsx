@@ -719,7 +719,7 @@ export default function Home() {
                   <div><strong>Physical Progress:</strong> {selectedProjectObj?.progress !== null && selectedProjectObj?.progress !== undefined ? `${selectedProjectObj?.progress}%` : "N/A"}</div>
                 </div>
 
-                {projectRisk && (
+                {projectRisk ? (
                   <div style={{ marginTop: "1rem", borderTop: "1px solid var(--border-soft)", paddingTop: "1rem", textAlign: "left" }}>
                     <h4 style={{ marginTop: 0, color: "var(--navy)", textAlign: "left" }}>Model Risk Assessment</h4>
                     <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "8px 0" }}>
@@ -763,6 +763,21 @@ export default function Home() {
                     ) : (
                       <div style={{ fontSize: "0.85rem", color: "var(--text-3)", textAlign: "left" }}>No interventions required. Routine monitoring active.</div>
                     )}
+                  </div>
+                ) : selectedProjectObj && (
+                  <div style={{ marginTop: "1rem", borderTop: "1px solid var(--border-soft)", paddingTop: "1rem", textAlign: "left" }}>
+                    <h4 style={{ marginTop: 0, color: "var(--navy)", textAlign: "left" }}>Model Risk Assessment</h4>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "8px 0" }}>
+                      <span className={`status-badge ${selectedProjectObj.opStatus === "COMPLETED" ? "completed" : selectedProjectObj.opStatus === "STAGNANT" ? "stagnant" : "high"}`}>
+                        Operational Status: {selectedProjectObj.opStatus || (selectedProjectObj.progress >= 100 ? "COMPLETED" : "IN_PROGRESS")}
+                      </span>
+                      <span className={`status-badge ${selectedProjectObj.status?.toLowerCase() || "low"}`}>
+                        Predictive Risk: {selectedProjectObj.status || "LOW"} ({selectedProjectObj.risk || 5}%)
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-3)", marginTop: "8px", textAlign: "left" }}>
+                      PAIMANA Rule Engine Active • Continuous project metrics monitoring.
+                    </div>
                   </div>
                 )}
               </div>
