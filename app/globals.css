@@ -633,17 +633,57 @@ button, input, select { font: inherit; }
   padding-right: 2px;
 }
 
+/* --- TYPOGRAPHY & ALIGNMENT SYSTEM --- */
+.text-left { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+
+.col-left { text-align: left; }
+.col-center { text-align: center; }
+.col-right { text-align: right; }
+
 .assistant-msg {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-width: 90%;
+  max-width: 92%;
   padding: 8px 12px;
   border-radius: var(--radius-md);
   font-size: 11.5px;
-  line-height: 1.45;
-  word-break: break-word;
+  line-height: 1.5;
+  word-break: normal;
   overflow-wrap: anywhere;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.assistant-msg-content {
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.5;
+}
+
+.assistant-msg-content p {
+  text-align: left;
+  margin: 4px 0 8px 0;
+  line-height: 1.5;
+}
+
+.assistant-msg-content ul, .assistant-msg-content ol {
+  text-align: left;
+  margin: 4px 0 8px 0;
+  padding-left: 1.2rem;
+}
+
+.assistant-msg-content li {
+  text-align: left;
+  margin-bottom: 3px;
+  line-height: 1.5;
 }
 
 .assistant-msg.assistant {

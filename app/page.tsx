@@ -530,15 +530,15 @@ export default function Home() {
                     <table>
                       <thead>
                         <tr>
-                          <th>Rank</th>
-                          <th>ID</th>
-                          <th>Project Name</th>
-                          <th>State</th>
-                          <th>Sanctioned Budget</th>
-                          <th>Physical Progress</th>
-                          <th>Risk Score</th>
-                          <th>Operational Status</th>
-                          <th>Action</th>
+                          <th style={{ textAlign: "center" }}>Rank</th>
+                          <th style={{ textAlign: "left" }}>ID</th>
+                          <th style={{ textAlign: "left" }}>Project Name</th>
+                          <th style={{ textAlign: "left" }}>State</th>
+                          <th style={{ textAlign: "right" }}>Sanctioned Budget</th>
+                          <th style={{ textAlign: "right" }}>Physical Progress</th>
+                          <th style={{ textAlign: "center" }}>Risk Score</th>
+                          <th style={{ textAlign: "center" }}>Operational Status</th>
+                          <th style={{ textAlign: "center" }}>Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -551,12 +551,12 @@ export default function Home() {
                               background: selectedProjectId === row.id ? "var(--accent-soft)" : "transparent",
                             }}
                           >
-                            <td className="rank">{row.rank}</td>
-                            <td><code>{row.id}</code></td>
-                            <td className="project-name">{row.name}</td>
-                            <td>{row.state}</td>
-                            <td className="project-value">{row.value}</td>
-                            <td className="progress-cell">
+                            <td className="rank" style={{ textAlign: "center" }}>{row.rank}</td>
+                            <td style={{ textAlign: "left" }}><code>{row.id}</code></td>
+                            <td className="project-name" style={{ textAlign: "left" }}>{row.name}</td>
+                            <td style={{ textAlign: "left" }}>{row.state}</td>
+                            <td className="project-value" style={{ textAlign: "right" }}>{row.value}</td>
+                            <td className="progress-cell" style={{ textAlign: "right" }}>
                               {row.progress !== null && row.progress !== undefined ? (
                                 <>
                                   <span className="progress-mini"><span className="progress-mini-fill" style={{ width: `${Math.min(100, row.progress)}%` }} /></span>
@@ -566,14 +566,14 @@ export default function Home() {
                                 <span className="progress-pct" style={{ color: "var(--text-3)" }}>N/A</span>
                               )}
                             </td>
-                            <td className={`risk-score ${row.risk >= 80 ? "critical" : row.risk >= 60 ? "high" : "medium"}`}>{row.risk}</td>
-                            <td>
+                            <td className={`risk-score ${row.risk >= 80 ? "critical" : row.risk >= 60 ? "high" : "medium"}`} style={{ textAlign: "center" }}>{row.risk}</td>
+                            <td style={{ textAlign: "center" }}>
                               <span className={`status-badge ${row.opStatus === "COMPLETED" ? "completed" : row.opStatus === "STAGNANT" ? "stagnant" : "high"}`}>
                                 <span className={`status-dot ${row.opStatus === "COMPLETED" ? "completed" : row.opStatus === "STAGNANT" ? "stagnant" : "high"}`} />
                                 {row.opStatus || "IN_PROGRESS"}
                               </span>
                             </td>
-                            <td>
+                            <td style={{ textAlign: "center" }}>
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -624,13 +624,13 @@ export default function Home() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Project ID</th>
-                      <th>Project Name</th>
-                      <th>State</th>
-                      <th>Sector</th>
-                      <th>Physical Progress</th>
-                      <th>Predicted Risk Level</th>
-                      <th>Action Required</th>
+                      <th style={{ textAlign: "left" }}>Project ID</th>
+                      <th style={{ textAlign: "left" }}>Project Name</th>
+                      <th style={{ textAlign: "left" }}>State</th>
+                      <th style={{ textAlign: "left" }}>Sector</th>
+                      <th style={{ textAlign: "right" }}>Physical Progress</th>
+                      <th style={{ textAlign: "center" }}>Predicted Risk Level</th>
+                      <th style={{ textAlign: "center" }}>Action Required</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -643,17 +643,17 @@ export default function Home() {
                         }}
                         style={{ cursor: "pointer", background: selectedProjectId === p.id ? "var(--accent-soft)" : "transparent" }}
                       >
-                        <td><code>{p.id}</code></td>
-                        <td className="project-name">{p.name}</td>
-                        <td>{p.state}</td>
-                        <td>{p.sector}</td>
-                        <td>{p.progress !== null && p.progress !== undefined ? `${p.progress}%` : "N/A"}</td>
-                        <td>
+                        <td style={{ textAlign: "left" }}><code>{p.id}</code></td>
+                        <td className="project-name" style={{ textAlign: "left" }}>{p.name}</td>
+                        <td style={{ textAlign: "left" }}>{p.state}</td>
+                        <td style={{ textAlign: "left" }}>{p.sector}</td>
+                        <td style={{ textAlign: "right" }}>{p.progress !== null && p.progress !== undefined ? `${p.progress}%` : "N/A"}</td>
+                        <td style={{ textAlign: "center" }}>
                           <span className={`status-badge ${p.opStatus === "COMPLETED" ? "completed" : p.status === "Critical" ? "critical" : p.status === "High" ? "high" : "medium"}`}>
                             {p.opStatus === "COMPLETED" ? "COMPLETED (LOW RISK)" : `Predictive Risk: ${p.status} (${p.risk}%)`}
                           </span>
                         </td>
-                        <td>
+                        <td style={{ textAlign: "center" }}>
                           <button
                             type="button"
                             onClick={(e) => {
@@ -685,10 +685,10 @@ export default function Home() {
                   <table>
                     <thead>
                       <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>State</th>
-                        <th>Progress</th>
+                        <th style={{ textAlign: "left" }}>ID</th>
+                        <th style={{ textAlign: "left" }}>Name</th>
+                        <th style={{ textAlign: "left" }}>State</th>
+                        <th style={{ textAlign: "right" }}>Progress</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -698,10 +698,10 @@ export default function Home() {
                           onClick={() => fetchProjectDetailData(p.id)}
                           style={{ cursor: "pointer", background: selectedProjectId === p.id ? "var(--accent-soft)" : "transparent" }}
                         >
-                          <td><code>{p.id}</code></td>
-                          <td className="project-name">{p.name}</td>
-                          <td>{p.state}</td>
-                          <td>{p.progress !== null && p.progress !== undefined ? `${p.progress}%` : "N/A"}</td>
+                          <td style={{ textAlign: "left" }}><code>{p.id}</code></td>
+                          <td className="project-name" style={{ textAlign: "left" }}>{p.name}</td>
+                          <td style={{ textAlign: "left" }}>{p.state}</td>
+                          <td style={{ textAlign: "right" }}>{p.progress !== null && p.progress !== undefined ? `${p.progress}%` : "N/A"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -710,8 +710,8 @@ export default function Home() {
               </div>
 
               <div className="table-panel" style={{ padding: "1.25rem" }}>
-                <h3 style={{ marginTop: 0, color: "var(--navy)" }}>Project Detail: {selectedProjectObj?.name}</h3>
-                <div style={{ fontSize: "0.85rem", lineHeight: 1.8 }}>
+                <h3 style={{ marginTop: 0, color: "var(--navy)", textAlign: "left" }}>Project Detail: {selectedProjectObj?.name}</h3>
+                <div style={{ fontSize: "0.85rem", lineHeight: 1.8, textAlign: "left" }}>
                   <div><strong>Project ID:</strong> <code>{selectedProjectObj?.id}</code></div>
                   <div><strong>State:</strong> {selectedProjectObj?.state}</div>
                   <div><strong>Sector:</strong> {selectedProjectObj?.sector}</div>
@@ -720,8 +720,8 @@ export default function Home() {
                 </div>
 
                 {projectRisk && (
-                  <div style={{ marginTop: "1rem", borderTop: "1px solid var(--border-soft)", paddingTop: "1rem" }}>
-                    <h4 style={{ marginTop: 0, color: "var(--navy)" }}>Model Risk Assessment</h4>
+                  <div style={{ marginTop: "1rem", borderTop: "1px solid var(--border-soft)", paddingTop: "1rem", textAlign: "left" }}>
+                    <h4 style={{ marginTop: 0, color: "var(--navy)", textAlign: "left" }}>Model Risk Assessment</h4>
                     <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", margin: "8px 0" }}>
                       <span className={`status-badge ${projectRisk.operational_status === "COMPLETED" ? "completed" : projectRisk.operational_status === "STAGNANT" ? "stagnant" : "high"}`}>
                         Operational Status: {projectRisk.operational_status || "IN_PROGRESS"}
@@ -731,25 +731,25 @@ export default function Home() {
                       </span>
                     </div>
 
-                    <h5 style={{ marginTop: "1rem", marginBottom: "0.4rem", color: "var(--navy)" }}>Top SHAP Model Feature Contributions:</h5>
-                    <ul style={{ paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.5 }}>
+                    <h5 style={{ marginTop: "1rem", marginBottom: "0.4rem", color: "var(--navy)", textAlign: "left" }}>Top SHAP Model Feature Contributions:</h5>
+                    <ul style={{ paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.5, textAlign: "left" }}>
                       {projectDrivers.map((d: any) => (
                         <li key={d.feature_name} style={{ marginBottom: "4px" }}><strong>{d.feature_name}</strong> ({d.feature_value}): {d.description}</li>
                       ))}
                     </ul>
 
-                    <h5 style={{ marginTop: "1rem", marginBottom: "0.4rem", color: "var(--navy)" }}>Government Interventions:</h5>
+                    <h5 style={{ marginTop: "1rem", marginBottom: "0.4rem", color: "var(--navy)", textAlign: "left" }}>Government Interventions:</h5>
                     {projectRecs?.recommendations?.length > 0 ? (
                       <div className="rec-grid">
                         {projectRecs.recommendations.map((r: any, idx: number) => (
-                          <div key={idx} className="rec-card">
+                          <div key={idx} className="rec-card" style={{ textAlign: "left" }}>
                             <div className="rec-header">
                               <span className="rec-cat">{humanCategoryTitle(r.category)}</span>
                               <span className={`status-badge ${r.priority === "HIGH" ? "critical" : r.priority === "MEDIUM" ? "high" : "completed"}`}>
                                 {r.priority}
                               </span>
                             </div>
-                            <div className="rec-body">
+                            <div className="rec-body" style={{ textAlign: "left" }}>
                               <div className="rec-field">
                                 <span className="rec-field-label">Action:</span> {r.action}
                               </div>
@@ -761,7 +761,7 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      <div style={{ fontSize: "0.85rem", color: "var(--text-3)" }}>No interventions required. Routine monitoring active.</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--text-3)", textAlign: "left" }}>No interventions required. Routine monitoring active.</div>
                     )}
                   </div>
                 )}
@@ -780,19 +780,19 @@ export default function Home() {
                 <table>
                   <thead>
                     <tr>
-                      <th>State / UT</th>
-                      <th>Monitored Projects</th>
-                      <th>Total Sanctioned Budget</th>
-                      <th>Average Physical Progress</th>
+                      <th style={{ textAlign: "left" }}>State / UT</th>
+                      <th style={{ textAlign: "right" }}>Monitored Projects</th>
+                      <th style={{ textAlign: "right" }}>Total Sanctioned Budget</th>
+                      <th style={{ textAlign: "right" }}>Average Physical Progress</th>
                     </tr>
                   </thead>
                   <tbody>
                     {stateIntel.map((row) => (
                       <tr key={row.state}>
-                        <td className="project-name">{row.state}</td>
-                        <td>{row.project_count}</td>
-                        <td>₹{row.total_original_cost_cr.toLocaleString()} Cr</td>
-                        <td>
+                        <td className="project-name" style={{ textAlign: "left" }}>{row.state}</td>
+                        <td style={{ textAlign: "right" }}>{row.project_count}</td>
+                        <td style={{ textAlign: "right" }}>₹{row.total_original_cost_cr.toLocaleString()} Cr</td>
+                        <td style={{ textAlign: "right" }}>
                           <span className="progress-pct">{row.avg_physical_progress_pct}%</span>
                         </td>
                       </tr>
@@ -814,19 +814,19 @@ export default function Home() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Sector</th>
-                      <th>Monitored Projects</th>
-                      <th>Total Sanctioned Budget</th>
-                      <th>Average Physical Progress</th>
+                      <th style={{ textAlign: "left" }}>Sector</th>
+                      <th style={{ textAlign: "right" }}>Monitored Projects</th>
+                      <th style={{ textAlign: "right" }}>Total Sanctioned Budget</th>
+                      <th style={{ textAlign: "right" }}>Average Physical Progress</th>
                     </tr>
                   </thead>
                   <tbody>
                     {sectorIntel.map((row) => (
                       <tr key={row.sector}>
-                        <td className="project-name">{row.sector}</td>
-                        <td>{row.project_count}</td>
-                        <td>₹{row.total_original_cost_cr.toLocaleString()} Cr</td>
-                        <td>
+                        <td className="project-name" style={{ textAlign: "left" }}>{row.sector}</td>
+                        <td style={{ textAlign: "right" }}>{row.project_count}</td>
+                        <td style={{ textAlign: "right" }}>₹{row.total_original_cost_cr.toLocaleString()} Cr</td>
+                        <td style={{ textAlign: "right" }}>
                           <span className="progress-pct">{row.avg_physical_progress_pct}%</span>
                         </td>
                       </tr>
