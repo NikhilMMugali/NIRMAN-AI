@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { apiClient } from "@/lib/api/client";
 
 interface AssistantChatProps {
   selectedProject: any | null;
@@ -15,18 +16,17 @@ interface Message {
   sender: "user" | "assistant";
   text: string;
   timestamp: string;
-  evidence?: string[];
-  actions?: string[];
+  source?: string;
+  model?: string;
 }
 
 export function NirmanAiChat({
   selectedProject,
   projectRisk,
-  projectDrivers,
-  projectRecs,
 }: AssistantChatProps) {
   const [inputQuery, setInputQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const chatBodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function NirmanAiChat({
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const quickPrompts = [
     "Why is this risky?",
@@ -65,9 +65,9 @@ export function NirmanAiChat({
     "Cost position",
   ];
 
-  function handleSend(queryText?: string) {
+  async function handleSend(queryText?: string) {
     const text = (queryText || inputQuery).trim();
-    if (!text) return;
+    if (!text || isLoading) return;
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -76,156 +76,37 @@ export function NirmanAiChat({
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    const botResponse = generateDecisionResponse(text);
-    const botMsg: Message = {
-      id: `bot-${Date.now()}`,
-      sender: "assistant",
-      text: botResponse.text,
-      evidence: botResponse.evidence,
-      actions: botResponse.actions,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    };
-
-    setMessages((prev) => [...prev, userMsg, botMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     if (!queryText) setInputQuery("");
-  }
+    setIsLoading(true);
 
-  function generateDecisionResponse(query: string): { text: string; evidence?: string[]; actions?: string[] } {
-    if (!selectedProject) {
-      return {
-        text: "Select a project from the command center table to analyze its risk factors.",
-      };
-    }
-
-    const q = query.toLowerCase();
-    const projName = selectedProject.name || selectedProject.id;
-    const projId = selectedProject.id;
-    const progress = projectRisk?.metrics?.physical_progress_pct ?? selectedProject.progress ?? 0;
-    const riskCategory = projectRisk?.risk_category || selectedProject.status || "UNKNOWN";
-    const riskProb = projectRisk?.risk_probability ? (projectRisk.risk_probability * 100).toFixed(1) : selectedProject.risk;
-    const opStatus = projectRisk?.operational_status || selectedProject.opStatus || (progress >= 100 ? "COMPLETED" : "IN_PROGRESS");
-    const overrun = projectRisk?.metrics?.cost_overrun_pct ?? 0;
-    const stagnantMonths = projectRisk?.metrics?.stagnant_months_3m ?? 0;
-    const reportingGap = projectRisk?.metrics?.reporting_gap_months ?? 0;
-    const recList = projectRecs?.recommendations || [];
-
-    // INTENT 1: Why is this project risky?
-    if (q.includes("why") || q.includes("risky") || q.includes("risk")) {
-      const evidenceList: string[] = [
-        `Physical Progress: ${progress}% (${opStatus})`,
-        `Cost Overrun Exposure: ${overrun > 0 ? `+${overrun}% budget escalation` : "0% (Within sanctioned budget)"}`,
-      ];
-
-      if (stagnantMonths > 0) {
-        evidenceList.push(`Progress Stagnation: Stagnant for ${stagnantMonths} of past 3 reporting periods.`);
-      }
-      if (reportingGap > 0) {
-        evidenceList.push(`Reporting Compliance Gap: ${reportingGap} month submission delay detected.`);
-      }
-      if (projectDrivers.length > 0) {
-        projectDrivers.forEach((d: any) => {
-          evidenceList.push(`Model Driver [${d.feature_name}]: ${d.description}`);
-        });
-      }
-
-      const actionList = recList.length > 0
-        ? recList.map((r: any) => `[${r.priority}] ${humanCategoryTitle(r.category)}: ${r.action}`)
-        : ["Maintain routine monthly PAIMANA progress monitoring."];
-
-      return {
-        text: `Project **${projName}** (\`${projId}\`) is currently assessed at **${riskCategory}** implementation risk (${riskProb}% probability) with Operational Status **${opStatus}**.`,
-        evidence: evidenceList,
-        actions: actionList,
-      };
-    }
-
-    // INTENT 2: Top risk drivers
-    if (q.includes("driver") || q.includes("shap") || q.includes("factor") || q.includes("top")) {
-      if (projectDrivers.length > 0) {
-        const driversList = projectDrivers.map(
-          (d: any) => `Rank ${d.rank}: ${d.feature_name} (${d.feature_value}) — ${d.description}`
-        );
-        return {
-          text: `Top SHAP model feature contributions for **${projName}**:`,
-          evidence: driversList,
-          actions: recList.map((r: any) => `${humanCategoryTitle(r.category)}: ${r.action}`),
+    try {
+      const res = await apiClient.postAssistantChat(text, selectedProject?.id);
+      if (res?.success && res?.data?.text) {
+        const botMsg: Message = {
+          id: `bot-${Date.now()}`,
+          sender: "assistant",
+          text: res.data.text,
+          source: res.data.source,
+          model: res.data.model,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         };
+        setMessages((prev) => [...prev, botMsg]);
+      } else {
+        throw new Error("Invalid backend AI response");
       }
-      return {
-        text: `No critical risk drivers detected for **${projName}**. Progress is tracking normally at ${progress}%.`,
-        evidence: [`Physical progress: ${progress}%`, `Cost overrun: ${overrun}%`],
-        actions: ["Continue routine monthly PAIMANA progress monitoring."],
+    } catch (err) {
+      console.error("AI Assistant chat error:", err);
+      const errorMsg: Message = {
+        id: `bot-err-${Date.now()}`,
+        sender: "assistant",
+        text: "Unable to reach NIRMAN AI right now. Please try again.",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
+      setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
     }
-
-    // INTENT 3: What should we do? / Recommended action
-    if (q.includes("action") || q.includes("do") || q.includes("recommend") || q.includes("should")) {
-      if (recList.length > 0) {
-        const actionBullets = recList.map(
-          (r: any) => `[${r.priority} PRIORITY] ${humanCategoryTitle(r.category)}: ${r.action} (Reason: ${r.rationale})`
-        );
-        return {
-          text: `Recommended government directives for **${projName}**:`,
-          actions: actionBullets,
-          evidence: [
-            `Operational Status: ${opStatus}`,
-            `Predictive Risk: ${riskCategory} (${riskProb}%)`,
-            `Physical Progress: ${progress}%`,
-          ],
-        };
-      }
-      return {
-        text: `No emergency interventions required for **${projName}**.`,
-        evidence: [`Project progress tracking at ${progress}% within sanctioned budget.`],
-        actions: ["Maintain routine monthly PAIMANA progress monitoring."],
-      };
-    }
-
-    // INTENT 4: Current status / Progress
-    if (q.includes("status") || q.includes("progress") || q.includes("period")) {
-      return {
-        text: `Current status summary for **${projName}**:`,
-        evidence: [
-          `Operational Status: ${opStatus}`,
-          `Physical Progress: ${progress}%`,
-          `PAIMANA Data Cutoff: Jun 2025`,
-          `Predictive Implementation Risk: ${riskCategory} (${riskProb}%)`,
-        ],
-        actions: recList.slice(0, 2).map((r: any) => `${humanCategoryTitle(r.category)}: ${r.action}`),
-      };
-    }
-
-    // INTENT 5: Cost / Budget / Financials
-    if (q.includes("cost") || q.includes("budget") || q.includes("expenditure") || q.includes("financial")) {
-      const orig = projectRisk?.metrics?.original_cost_cr || selectedProject.value || "N/A";
-      const rev = projectRisk?.metrics?.revised_cost_cr || "N/A";
-      return {
-        text: `Financial position for **${projName}**:`,
-        evidence: [
-          `Original Sanctioned Budget: ₹${orig} Cr`,
-          `Revised Cost Estimate: ₹${rev} Cr`,
-          `Cost Overrun Variance: ${overrun > 0 ? `+${overrun}% escalation` : "0% (On Budget)"}`,
-          `Physical Progress Utilized: ${progress}%`,
-        ],
-        actions: overrun > 5.0
-          ? ["Trigger mandatory financial review and revised estimate audit by MoF committee."]
-          : ["Maintain routine financial expenditure reconciliation."],
-      };
-    }
-
-    // Default response fallback
-    return {
-      text: `Decision support summary for **${projName}** (\`${projId}\`):`,
-      evidence: [
-        `Operational Status: ${opStatus}`,
-        `Predictive Risk: ${riskCategory} (${riskProb}%)`,
-        `Physical Progress: ${progress}%`,
-        `Cost Overrun: ${overrun > 0 ? `+${overrun}%` : "0%"}`,
-      ],
-      actions: recList.length > 0
-        ? recList.map((r: any) => `${humanCategoryTitle(r.category)}: ${r.action}`)
-        : ["Maintain routine monthly PAIMANA progress monitoring."],
-    };
   }
 
   const opStatus = projectRisk?.operational_status || selectedProject?.opStatus || (selectedProject?.progress >= 100 ? "COMPLETED" : "IN_PROGRESS");
@@ -241,7 +122,7 @@ export function NirmanAiChat({
           </svg>
           NIRMAN AI ASSISTANT
         </div>
-        <span className="assistant-subtitle">Government Decision Support</span>
+        <span className="assistant-subtitle">Government Decision Support • Groq LLM</span>
       </div>
 
       {selectedProject && (
@@ -267,32 +148,25 @@ export function NirmanAiChat({
               <span className="msg-time">{m.timestamp}</span>
             </div>
             <div className="assistant-msg-content">
-              <p dangerouslySetInnerHTML={{ __html: formatMarkdown(m.text) }} />
-
-              {m.evidence && m.evidence.length > 0 && (
-                <div className="msg-section">
-                  <div className="msg-section-title">Key Evidence & Metrics:</div>
-                  <ul className="msg-bullets">
-                    {m.evidence.map((ev, idx) => (
-                      <li key={idx} dangerouslySetInnerHTML={{ __html: formatMarkdown(ev) }} />
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {m.actions && m.actions.length > 0 && (
-                <div className="msg-section">
-                  <div className="msg-section-title">Recommended Directives:</div>
-                  <ul className="msg-bullets actions">
-                    {m.actions.map((act, idx) => (
-                      <li key={idx} dangerouslySetInnerHTML={{ __html: formatMarkdown(act) }} />
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <SafeFormattedText content={m.text} />
             </div>
           </div>
         ))}
+
+        {isLoading && (
+          <div className="assistant-msg assistant typing">
+            <div className="assistant-msg-meta">
+              <span>NIRMAN AI</span>
+              <span className="msg-time">Thinking...</span>
+            </div>
+            <div className="assistant-msg-content" style={{ display: "flex", gap: "6px", alignItems: "center", padding: "8px 12px" }}>
+              <span className="typing-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse 1s infinite alternate" }} />
+              <span className="typing-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse 1s infinite alternate 0.2s" }} />
+              <span className="typing-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent)", animation: "pulse 1s infinite alternate 0.4s" }} />
+              <span style={{ fontSize: "11px", color: "var(--text-3)", marginLeft: "4px" }}>Analyzing risk drivers & querying Groq model...</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="assistant-quick-prompts">
@@ -302,7 +176,7 @@ export function NirmanAiChat({
             type="button"
             className="quick-chip"
             onClick={() => handleSend(prompt)}
-            disabled={!selectedProject}
+            disabled={!selectedProject || isLoading}
           >
             {prompt}
           </button>
@@ -321,38 +195,129 @@ export function NirmanAiChat({
           placeholder={selectedProject ? `Ask about ${selectedProject.name}...` : "Select a project to enable AI..."}
           value={inputQuery}
           onChange={(e) => setInputQuery(e.target.value)}
-          disabled={!selectedProject}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+          disabled={!selectedProject || isLoading}
         />
-        <button type="submit" className="assistant-send-btn" disabled={!selectedProject || !inputQuery.trim()}>
-          Send
+        <button type="submit" className="assistant-send-btn" disabled={!selectedProject || !inputQuery.trim() || isLoading}>
+          {isLoading ? "..." : "Send"}
         </button>
       </form>
     </div>
   );
 }
 
-function humanCategoryTitle(cat: string): string {
-  switch (cat) {
-    case "MILESTONE_RECOVERY":
-      return "Milestone Recovery";
-    case "FINANCIAL_AUDIT":
-      return "Financial Review";
-    case "REPORTING_COMPLIANCE":
-      return "Reporting Compliance";
-    case "POST_COMPLETION_AUDIT":
-      return "Post-Completion Audit";
-    case "ROUTINE_CLOSURE":
-      return "Routine Project Closure";
-    case "ROUTINE_MONITORING":
-      return "Routine Monitoring";
-    default:
-      return cat || "Government Action";
-  }
-}
+function SafeFormattedText({ content }: { content: string }) {
+  if (!content) return null;
 
-function formatMarkdown(str: string): string {
-  if (!str) return "";
-  return str
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/`(.*?)`/g, "<code>$1</code>");
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let inTable = false;
+  let tableRows: string[][] = [];
+
+  const renderInline = (text: string): React.ReactNode[] => {
+    const parts: React.ReactNode[] = [];
+    const regex = /(\*\*.*?\*\*|`.*?`)/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+      const token = match[0];
+      if (token.startsWith("**") && token.endsWith("**")) {
+        parts.push(<strong key={match.index}>{token.slice(2, -2)}</strong>);
+      } else if (token.startsWith("`") && token.endsWith("`")) {
+        parts.push(<code key={match.index}>{token.slice(1, -1)}</code>);
+      }
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+    return parts;
+  };
+
+  const flushTable = () => {
+    if (tableRows.length > 0) {
+      const validRows = tableRows.filter(
+        (row) => !row.every((cell) => /^[\s\-:]+$/.test(cell))
+      );
+      if (validRows.length > 0) {
+        const header = validRows[0];
+        const body = validRows.slice(1);
+        elements.push(
+          <div key={`tbl-${elements.length}`} style={{ overflowX: "auto", margin: "8px 0" }}>
+            <table style={{ width: "100%", fontSize: "0.8rem", borderCollapse: "collapse" }}>
+              <thead>
+                <tr>
+                  {header.map((cell, idx) => (
+                    <th key={idx} style={{ borderBottom: "1px solid var(--border)", padding: "4px 8px", textAlign: "left", background: "var(--surface-alt)" }}>
+                      {renderInline(cell.trim())}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {body.map((row, rIdx) => (
+                  <tr key={rIdx}>
+                    {row.map((cell, cIdx) => (
+                      <td key={cIdx} style={{ borderBottom: "1px solid var(--border-soft)", padding: "4px 8px" }}>
+                        {renderInline(cell.trim())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      tableRows = [];
+      inTable = false;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
+      inTable = true;
+      const cells = trimmed.split("|").slice(1, -1);
+      tableRows.push(cells);
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+
+    if (!trimmed) {
+      continue;
+    }
+
+    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      elements.push(
+        <li key={i} style={{ marginLeft: "1rem", marginBottom: "2px" }}>
+          {renderInline(trimmed.substring(2))}
+        </li>
+      );
+    } else {
+      elements.push(
+        <p key={i} style={{ margin: "4px 0" }}>
+          {renderInline(line)}
+        </p>
+      );
+    }
+  }
+
+  if (inTable) {
+    flushTable();
+  }
+
+  return <>{elements}</>;
 }

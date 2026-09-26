@@ -19,7 +19,7 @@ class ApiClient {
     this.timeoutMs = timeoutMs;
   }
 
-  private async request<T>(path: string): Promise<T> {
+  private async request<T>(path: string, options?: RequestInit): Promise<T> {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
 
@@ -27,10 +27,13 @@ class ApiClient {
       const normalizedPath = path.startsWith("/") ? path : `/${path}`;
       const url = `${this.baseUrl}${normalizedPath}`;
       const response = await fetch(url, {
-        method: "GET",
+        method: options?.method ?? "GET",
         headers: {
           Accept: "application/json",
+          ...(options?.body ? { "Content-Type": "application/json" } : {}),
+          ...options?.headers,
         },
+        body: options?.body,
         signal: controller.signal,
       });
 
@@ -80,7 +83,21 @@ class ApiClient {
     return this.request<{ success: boolean; data: any }>(`/api/v1/projects/${encodeURIComponent(projectId)}/assessment`);
   }
 
-
+  async postAssistantChat(
+    query: string,
+    projectId?: string
+  ): Promise<{ success: boolean; data: { success: boolean; source: string; model?: string; text: string } }> {
+    return this.request<{ success: boolean; data: { success: boolean; source: string; model?: string; text: string } }>(
+      "/api/v1/assistant/chat",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          query,
+          project_id: projectId || null,
+        }),
+      }
+    );
+  }
 
   async getAnalyticsSummary(): Promise<{ success: boolean; data: any }> {
     return this.request<{ success: boolean; data: any }>("/api/v1/analytics/summary");
