@@ -33,6 +33,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [showProfilePopover, setShowProfilePopover] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [, setLoading] = useState<boolean>(true);
 
@@ -297,7 +298,10 @@ export default function Home() {
             <div
               className="topbar-icon topbar-badge"
               aria-label="Notifications"
-              onClick={() => setShowNotifications(!showNotifications)}
+              onClick={() => {
+                setShowNotifications(!showNotifications);
+                setShowProfilePopover(false);
+              }}
               style={{ cursor: "pointer" }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -326,7 +330,33 @@ export default function Home() {
               </div>
             )}
 
-            <div className="topbar-avatar">AK</div>
+            <div
+              className="topbar-avatar"
+              onClick={() => {
+                setShowProfilePopover(!showProfilePopover);
+                setShowNotifications(false);
+              }}
+              style={{ cursor: "pointer" }}
+              title="Official Profile"
+            >
+              AK
+            </div>
+
+            {showProfilePopover && (
+              <div className="notification-popover" style={{ right: 0, width: 220 }}>
+                <div className="popover-header">
+                  <span>Official Profile</span>
+                  <span style={{ fontSize: "10px", color: "var(--accent)" }}>Verified</span>
+                </div>
+                <div className="popover-item" style={{ borderBottom: "none" }}>
+                  <strong>Ashok Kumar (AK)</strong>
+                  <small>NIRMAN AI Administrator</small>
+                  <div style={{ marginTop: "6px", fontSize: "10px", color: "var(--text-3)", fontWeight: 600 }}>
+                    Status: Prototype Mode Active
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </header>
 
@@ -468,7 +498,10 @@ export default function Home() {
                 <div className="table-panel">
                   <div className="table-header">
                     <div>
-                      <div className="table-title">PAIMANA Monitored Projects</div>
+                      <div className="table-title" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                        <span>PAIMANA Monitored Projects</span>
+                        <span className="mobile-scroll-hint" style={{ fontSize: "10px", color: "var(--text-3)", fontWeight: "normal" }}>(Scroll horizontally &rarr;)</span>
+                      </div>
                       <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
                         {["ALL", "ACTIVE", "CRITICAL", "STAGNANT", "COMPLETED"].map((f) => (
                           <button
