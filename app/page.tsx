@@ -293,7 +293,7 @@ export default function Home() {
               <span className="refresh-btn-text">{isRefreshing ? "Refreshing..." : "Refresh"}</span>
             </button>
 
-            <span className="topbar-date">PAIMANA Jun 2025</span>
+            <span className="topbar-date">PAIMANA Cutoff: Jun 2025</span>
 
             <div
               className="topbar-icon topbar-badge"
